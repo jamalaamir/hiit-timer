@@ -1,0 +1,18 @@
+{
+  "appId": "com.jamalaamirkhan.hiittimer",
+  "appName": "HIIT Interval Timer",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true,
+    "backgroundColor": "#09090B"
+  },
+  "plugins": {
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#09090B"
+    }
+  }
+}
