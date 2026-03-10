@@ -39,24 +39,24 @@ jobs:
       - name: Add Capacitor Android platform
         run: npx cap add android
 
+      - name: Sync Capacitor
+        run: npx cap sync android
+
       - name: Copy app icons
         run: |
           for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
             mkdir -p android/app/src/main/res/mipmap-${density}
           done
-          cp icons/mipmap-mdpi/ic_launcher.png         android/app/src/main/res/mipmap-mdpi/ic_launcher.png
-          cp icons/mipmap-mdpi/ic_launcher_round.png   android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
-          cp icons/mipmap-hdpi/ic_launcher.png         android/app/src/main/res/mipmap-hdpi/ic_launcher.png
-          cp icons/mipmap-hdpi/ic_launcher_round.png   android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
-          cp icons/mipmap-xhdpi/ic_launcher.png        android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
-          cp icons/mipmap-xhdpi/ic_launcher_round.png  android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
-          cp icons/mipmap-xxhdpi/ic_launcher.png       android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
-          cp icons/mipmap-xxhdpi/ic_launcher_round.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
-          cp icons/mipmap-xxxhdpi/ic_launcher.png      android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+          cp icons/mipmap-mdpi/ic_launcher.png          android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+          cp icons/mipmap-mdpi/ic_launcher_round.png    android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
+          cp icons/mipmap-hdpi/ic_launcher.png          android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+          cp icons/mipmap-hdpi/ic_launcher_round.png    android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
+          cp icons/mipmap-xhdpi/ic_launcher.png         android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+          cp icons/mipmap-xhdpi/ic_launcher_round.png   android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
+          cp icons/mipmap-xxhdpi/ic_launcher.png        android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+          cp icons/mipmap-xxhdpi/ic_launcher_round.png  android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+          cp icons/mipmap-xxxhdpi/ic_launcher.png       android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
           cp icons/mipmap-xxxhdpi/ic_launcher_round.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
-
-      - name: Sync Capacitor
-        run: npx cap sync android
 
       - name: Make gradlew executable
         run: chmod +x android/gradlew
