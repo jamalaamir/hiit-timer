@@ -8,39 +8,126 @@ const PHASE_CONFIG = {
 
 const DEFAULT_SETTINGS = { warmup: 60, work: 40, rest: 20, rounds: 8 };
 
+// ─── EXTRA THEMES ────────────────────────────────────────────────────
+const EXTRA_THEMES = {
+  redfire: {
+    name:"RED FIRE", icon:"🔴",
+    bg:"#0D0000", surface:"rgba(255,60,0,0.07)", surfaceHov:"rgba(255,60,0,0.12)",
+    border:"rgba(255,60,0,0.18)", borderMid:"rgba(255,60,0,0.30)",
+    text:"#FFE5E0", textMid:"rgba(255,200,190,0.85)", textLow:"rgba(255,150,130,0.55)",
+    textFaint:"rgba(255,120,100,0.30)", inputBg:"rgba(255,60,0,0.10)",
+    tabActive:"#FF3D00", accent:"#FF3D00", trackBg:"rgba(255,60,0,0.15)", cardBg:"rgba(255,60,0,0.05)",
+  },
+  ocean: {
+    name:"OCEAN", icon:"🔵",
+    bg:"#010D1A", surface:"rgba(0,150,255,0.07)", surfaceHov:"rgba(0,150,255,0.12)",
+    border:"rgba(0,150,255,0.18)", borderMid:"rgba(0,150,255,0.30)",
+    text:"#E0F4FF", textMid:"rgba(180,230,255,0.85)", textLow:"rgba(100,190,255,0.55)",
+    textFaint:"rgba(60,160,255,0.30)", inputBg:"rgba(0,150,255,0.10)",
+    tabActive:"#00AAFF", accent:"#00AAFF", trackBg:"rgba(0,150,255,0.15)", cardBg:"rgba(0,150,255,0.05)",
+  },
+  purplebeast: {
+    name:"PURPLE BEAST", icon:"🟣",
+    bg:"#0A0010", surface:"rgba(180,0,255,0.07)", surfaceHov:"rgba(180,0,255,0.12)",
+    border:"rgba(180,0,255,0.18)", borderMid:"rgba(180,0,255,0.30)",
+    text:"#F5E0FF", textMid:"rgba(220,170,255,0.85)", textLow:"rgba(180,100,255,0.55)",
+    textFaint:"rgba(150,60,255,0.30)", inputBg:"rgba(180,0,255,0.10)",
+    tabActive:"#CC00FF", accent:"#CC00FF", trackBg:"rgba(180,0,255,0.15)", cardBg:"rgba(180,0,255,0.05)",
+  },
+  gold: {
+    name:"GOLD CHAMPION", icon:"🟡",
+    bg:"#0D0900", surface:"rgba(255,200,0,0.07)", surfaceHov:"rgba(255,200,0,0.12)",
+    border:"rgba(255,200,0,0.18)", borderMid:"rgba(255,200,0,0.30)",
+    text:"#FFF8E0", textMid:"rgba(255,230,150,0.85)", textLow:"rgba(255,200,80,0.55)",
+    textFaint:"rgba(255,180,0,0.30)", inputBg:"rgba(255,200,0,0.10)",
+    tabActive:"#FFB800", accent:"#FFB800", trackBg:"rgba(255,200,0,0.15)", cardBg:"rgba(255,200,0,0.05)",
+  },
+};
+
+// ─── EXTRA SOUND PACKS ───────────────────────────────────────────────
+const SOUND_PACKS = {
+  default: { name:"DEFAULT", icon:"🔔" },
+  boxing:  { name:"BOXING BELL", icon:"🥊" },
+  military:{ name:"MILITARY", icon:"🪖" },
+  zen:     { name:"ZEN", icon:"🧘" },
+};
+
+const makeSounds = (pack, playToneFn) => ({
+  default: {
+    warmup:    c=>{playToneFn(c,"sine",392,.2,.35,0);playToneFn(c,"sine",523,.2,.35,.18);playToneFn(c,"sine",659,.25,.3,.36);},
+    work:      c=>{playToneFn(c,"square",110,.06,.6,0);playToneFn(c,"square",220,.06,.55,.07);playToneFn(c,"sawtooth",880,.14,.5,.13);playToneFn(c,"sawtooth",1100,.1,.4,.22);},
+    rest:      c=>{playToneFn(c,"sine",1047,.28,.3,0);playToneFn(c,"sine",784,.28,.3,.2);playToneFn(c,"sine",523,.32,.28,.4);playToneFn(c,"sine",392,.3,.25,.6);},
+    countdown: (c,n)=>{const p={5:660,4:770,3:880,2:990,1:1200};playToneFn(c,"triangle",p[n]||880,.07,n===1?.5:.35,0);if(n===1)playToneFn(c,"triangle",(p[n]||880)*1.5,.1,.3,.08);},
+    complete:  c=>{[523,659,784,1047,1319].forEach((f,i)=>playToneFn(c,"sine",f,.35,.5-i*.04,i*.16));},
+    phaseEnd:  c=>{[1047,880,698].forEach((f,i)=>playToneFn(c,"sawtooth",f,.06,.35,i*.055));},
+  },
+  boxing: {
+    warmup:    c=>{playToneFn(c,"sawtooth",180,.08,.7,0);playToneFn(c,"sawtooth",180,.08,.5,.1);},
+    work:      c=>{for(let i=0;i<3;i++)playToneFn(c,"sawtooth",160,.06,.8,i*.09);},
+    rest:      c=>{playToneFn(c,"sine",280,.6,.5,0);playToneFn(c,"sine",280,.6,.3,.65);},
+    countdown: (c,n)=>{playToneFn(c,"sawtooth",200,.05,n===1?.9:.6,0);},
+    complete:  c=>{for(let i=0;i<5;i++)playToneFn(c,"sawtooth",160,.07,.7,i*.11);},
+    phaseEnd:  c=>{playToneFn(c,"sawtooth",180,.08,.6,0);playToneFn(c,"sawtooth",180,.08,.4,.1);},
+  },
+  military: {
+    warmup:    c=>{[880,880,1320].forEach((f,i)=>playToneFn(c,"square",f,.07,.5,i*.12));},
+    work:      c=>{[220,440,880,880].forEach((f,i)=>playToneFn(c,"square",f,.06,.7,i*.08));},
+    rest:      c=>{playToneFn(c,"square",440,.15,.4,0);playToneFn(c,"square",330,.15,.3,.2);},
+    countdown: (c,n)=>{playToneFn(c,"square",n===1?1320:880,.06,n===1?.8:.5,0);},
+    complete:  c=>{[440,440,440,880].forEach((f,i)=>playToneFn(c,"square",f,.1,.6,i*.15));},
+    phaseEnd:  c=>{playToneFn(c,"square",880,.06,.5,0);playToneFn(c,"square",660,.06,.4,.1);},
+  },
+  zen: {
+    warmup:    c=>{[528,660,792].forEach((f,i)=>playToneFn(c,"sine",f,.5,.25,i*.3));},
+    work:      c=>{playToneFn(c,"sine",396,.3,.3,0);playToneFn(c,"sine",528,.3,.3,.35);},
+    rest:      c=>{[792,660,528,396].forEach((f,i)=>playToneFn(c,"sine",f,.6,.2,i*.35));},
+    countdown: (c,n)=>{playToneFn(c,"sine",n===1?792:528,.4,.2,0);},
+    complete:  c=>{[396,528,660,792,1056].forEach((f,i)=>playToneFn(c,"sine",f,.7,.25,i*.25));},
+    phaseEnd:  c=>{playToneFn(c,"sine",660,.5,.2,0);playToneFn(c,"sine",528,.5,.2,.3);},
+  },
+})[pack] || {};
+
+// ─── LOCKED PRESETS ───────────────────────────────────────────────────────────
+const EXTRA_PRESETS = [
+  {name:"TABATA",      icon:"⚡", color:"#FF6B00", cfg:{warmup:10,work:20,rest:10,rounds:8},  desc:"20s work / 10s rest"},
+  {name:"BOXING ROUND",icon:"🥊", color:"#E8302A", cfg:{warmup:60,work:180,rest:60,rounds:12},desc:"3min round / 1min rest"},
+  {name:"CARDIO BURN", icon:"🔥", color:"#FF8C00", cfg:{warmup:90,work:45,rest:15,rounds:10},desc:"45s work / 15s rest"},
+  {name:"NAVY SEAL",   icon:"💀", color:"#2A9FE8", cfg:{warmup:30,work:120,rest:20,rounds:15},desc:"2min work / 20s rest"},
+];
+
 // ─── THEMES ───────────────────────────────────────────────────────────────────
 const THEMES = {
   dark: {
     bg:         "#09090B",
-    surface:    "rgba(255,255,255,0.05)",
-    surfaceHov: "rgba(255,255,255,0.09)",
-    border:     "rgba(255,255,255,0.10)",
-    borderMid:  "rgba(255,255,255,0.18)",
+    surface:    "rgba(255,255,255,0.06)",
+    surfaceHov: "rgba(255,255,255,0.10)",
+    border:     "rgba(255,255,255,0.14)",
+    borderMid:  "rgba(255,255,255,0.24)",
     text:       "#FFFFFF",
-    textMid:    "rgba(255,255,255,0.75)",
-    textLow:    "rgba(255,255,255,0.45)",
-    textFaint:  "rgba(255,255,255,0.25)",
-    inputBg:    "rgba(255,255,255,0.08)",
+    textMid:    "rgba(255,255,255,0.90)",
+    textLow:    "rgba(255,255,255,0.65)",
+    textFaint:  "rgba(255,255,255,0.40)",
+    inputBg:    "rgba(255,255,255,0.10)",
     tabActive:  "#E8302A",
     accent:     "#E8302A",
-    trackBg:    "rgba(255,255,255,0.10)",
-    cardBg:     "rgba(255,255,255,0.04)",
+    trackBg:    "rgba(255,255,255,0.14)",
+    cardBg:     "rgba(255,255,255,0.06)",
   },
   light: {
     bg:         "#E8EFF7",
     surface:    "#FFFFFF",
     surfaceHov: "#D8E4F0",
-    border:     "#9BB0C8",
-    borderMid:  "#7A9AB8",
-    text:       "#0D1B2A",
-    textMid:    "#1E3A52",
-    textLow:    "#2E5472",
-    textFaint:  "#4A7A9B",
-    inputBg:    "#D8E4F0",
+    border:     "#8AA4C0",
+    borderMid:  "#6A8AAA",
+    text:       "#050E1A",
+    textMid:    "#0D2238",
+    textLow:    "#1A3A58",
+    textFaint:  "#3A6080",
+    inputBg:    "#D0DCF0",
     tabActive:  "#C8281E",
     accent:     "#C8281E",
-    trackBg:    "#9BB0C8",
-    cardBg:     "#F0F5FB",
+    trackBg:    "#8AA4C0",
+    cardBg:     "#EAF0F8",
   },
 };
 
@@ -54,14 +141,6 @@ const playTone = (ctx, type, freq, dur, vol, when=0) => {
   g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+when+dur);
   o.start(ctx.currentTime+when); o.stop(ctx.currentTime+when+dur+0.01);
 };
-const sounds = {
-  warmup:    c=>{playTone(c,"sine",392,.2,.35,0);playTone(c,"sine",523,.2,.35,.18);playTone(c,"sine",659,.25,.3,.36);},
-  work:      c=>{playTone(c,"square",110,.06,.6,0);playTone(c,"square",220,.06,.55,.07);playTone(c,"sawtooth",880,.14,.5,.13);playTone(c,"sawtooth",1100,.1,.4,.22);},
-  rest:      c=>{playTone(c,"sine",1047,.28,.3,0);playTone(c,"sine",784,.28,.3,.2);playTone(c,"sine",523,.32,.28,.4);playTone(c,"sine",392,.3,.25,.6);},
-  countdown: (c,n)=>{const p={5:660,4:770,3:880,2:990,1:1200};playTone(c,"triangle",p[n]||880,.07,n===1?.5:.35,0);if(n===1)playTone(c,"triangle",(p[n]||880)*1.5,.1,.3,.08);},
-  complete:  c=>{[523,659,784,1047,1319].forEach((f,i)=>playTone(c,"sine",f,.35,.5-i*.04,i*.16));},
-  phaseEnd:  c=>{[1047,880,698].forEach((f,i)=>playTone(c,"sawtooth",f,.06,.35,i*.055));},
-};
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 const toSecs  = (m,s) => Math.max(0,(parseInt(m,10)||0)*60+(parseInt(s,10)||0));
@@ -70,32 +149,35 @@ const fmtSS   = t => String(Math.floor(t)%60).padStart(2,"0");
 const fmtDisp = t => `${fmtMM(t)}:${fmtSS(t)}`;
 const trunc   = (s,n) => s.length>n?s.slice(0,n)+"…":s;
 
+
 // ─── MIN:SEC INPUT ────────────────────────────────────────────────────────────
 function MinSecInput({ label, icon, color, valueSecs, onChange, T }) {
   const [mVal,setMVal] = useState(String(Math.floor(valueSecs/60)));
   const [sVal,setSVal] = useState(String(valueSecs%60).padStart(2,"0"));
   useEffect(()=>{setMVal(String(Math.floor(valueSecs/60)));setSVal(String(valueSecs%60).padStart(2,"0"));},[valueSecs]);
   const commit=(m,s)=>onChange(toSecs(m,s));
-  const iStyle={width:58,padding:"10px 6px",textAlign:"center",background:T.inputBg,
-    border:`1.5px solid ${T.borderMid}`,borderRadius:9,color:T.text,
-    fontFamily:"'Bebas Neue',sans-serif",fontSize:26,letterSpacing:4,outline:"none"};
+  const iStyle={width:46,padding:"7px 4px",textAlign:"center",background:T.inputBg,
+    border:`1.5px solid ${T.borderMid}`,borderRadius:8,color:T.text,
+    fontFamily:"'Poppins',sans-serif",fontSize:18,letterSpacing:1,outline:"none",fontWeight:700};
   return (
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",
-      padding:"14px 18px",borderRadius:13,background:T.surface,
-      border:`1.5px solid ${T.border}`,marginBottom:10}}>
-      <div style={{display:"flex",alignItems:"center",gap:10}}>
-        <span style={{fontSize:22}}>{icon}</span>
-        <span style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:2,fontSize:16,color:color||T.textMid,fontWeight:"bold"}}>{label}</span>
+      padding:"10px 14px",borderRadius:12,background:T.surface,
+      border:`1.5px solid ${T.border}`,marginBottom:8}}>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        <span style={{fontSize:20}}>{icon}</span>
+        <span style={{fontFamily:"'Poppins',sans-serif",letterSpacing:0,fontSize:14,color:color||T.textMid,fontWeight:700}}>{label}</span>
       </div>
-      <div style={{display:"flex",alignItems:"center",gap:6}}>
-        <input type="number" min={0} max={99} value={mVal} style={iStyle}
-          onChange={e=>{setMVal(e.target.value);commit(e.target.value,sVal);}} onFocus={e=>e.target.select()}/>
-        <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:28,color:T.textLow}}>:</span>
-        <input type="number" min={0} max={59} value={sVal} style={iStyle}
-          onChange={e=>{setSVal(e.target.value);commit(mVal,e.target.value);}} onFocus={e=>e.target.select()}/>
-        <div style={{marginLeft:4}}>
-          <div style={{fontSize:11,letterSpacing:4,color:T.textLow,fontWeight:"bold"}}>MIN</div>
-          <div style={{fontSize:11,letterSpacing:4,color:T.textLow,fontWeight:"bold"}}>SEC</div>
+      <div style={{display:"flex",alignItems:"center",gap:4}}>
+        <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
+          <span style={{fontSize:9,letterSpacing:1,color:T.textFaint,fontWeight:600}}>MIN</span>
+          <input type="number" min={0} max={99} value={mVal} style={iStyle}
+            onChange={e=>{setMVal(e.target.value);commit(e.target.value,sVal);}} onFocus={e=>e.target.select()}/>
+        </div>
+        <span style={{fontFamily:"'Poppins',sans-serif",fontSize:20,color:T.textLow,fontWeight:700,marginTop:14}}>:</span>
+        <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
+          <span style={{fontSize:9,letterSpacing:1,color:T.textFaint,fontWeight:600}}>SEC</span>
+          <input type="number" min={0} max={59} value={sVal} style={iStyle}
+            onChange={e=>{setSVal(e.target.value);commit(mVal,e.target.value);}} onFocus={e=>e.target.select()}/>
         </div>
       </div>
     </div>
@@ -105,11 +187,11 @@ function MinSecInput({ label, icon, color, valueSecs, onChange, T }) {
 // ─── CIRCULAR TIMER ──────────────────────────────────────────────────────────
 function CircularTimer({ progress, phase, timeLeft, isPaused, isCountdown, T, isDark }) {
   const cfg = PHASE_CONFIG[phase]||PHASE_CONFIG.work;
-  const r=90,cx=110,cy=110,circ=2*Math.PI*r;
+  const r=108,cx=124,cy=124,circ=2*Math.PI*r;
   const offset=circ*(1-Math.max(0,Math.min(1,progress)));
   return (
-    <div style={{position:"relative",width:220,height:220,margin:"0 auto"}}>
-      <svg width="220" height="220" style={{transform:"rotate(-90deg)"}}>
+    <div style={{position:"relative",width:248,height:248,margin:"0 auto"}}>
+      <svg width="248" height="248" style={{transform:"rotate(-90deg)"}}>
         <circle cx={cx} cy={cy} r={r} fill="none" stroke={isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.10)"} strokeWidth="12"/>
         <circle cx={cx} cy={cy} r={r} fill="none"
           stroke={isCountdown?"#FF3D00":cfg.color}
@@ -117,7 +199,7 @@ function CircularTimer({ progress, phase, timeLeft, isPaused, isCountdown, T, is
           strokeDasharray={circ} strokeDashoffset={offset}
           strokeLinecap="round"
           style={{
-            filter:`drop-shadow(0 0 ${isCountdown?22:12}px ${isCountdown?"#FF3D00":cfg.color})`,
+            filter:"none",
             transition:"stroke-dashoffset .65s ease,stroke .3s,stroke-width .2s",
             animation:isCountdown?"ringPulse .45s ease-in-out infinite alternate":"none",
           }}
@@ -125,19 +207,19 @@ function CircularTimer({ progress, phase, timeLeft, isPaused, isCountdown, T, is
       </svg>
       <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",
         alignItems:"center",justifyContent:"center",gap:4}}>
-        <span style={{fontSize:13,fontFamily:"'Bebas Neue',sans-serif",letterSpacing:4,
-          color:isCountdown?"#FF7043":cfg.color,fontWeight:"bold"}}>
+        <span style={{fontSize:14,fontFamily:"'Poppins',sans-serif",letterSpacing:4,
+          color:isCountdown?"#FF7043":cfg.color,fontWeight:900}}>
           {isCountdown?"⚠ GET READY":`${cfg.icon} ${cfg.label}`}
         </span>
-        <span style={{fontSize:isCountdown?72:62,fontFamily:"'Bebas Neue',sans-serif",lineHeight:1,fontWeight:800,
+        <span style={{fontSize:isCountdown?76:66,fontFamily:"'Poppins',sans-serif",lineHeight:1,fontWeight:900,
           color:isCountdown?"#FF3D00":T.text,
-          textShadow:`0 0 30px ${isCountdown?"#FF3D0080":cfg.color+"60"}`,
+          textShadow:"none",
           transition:"font-size .2s,color .2s",
           animation:isCountdown?"popIn .25s ease":"none"}}>
           {fmtDisp(timeLeft)}
         </span>
         {isPaused&&<span style={{fontSize:13,letterSpacing:4,color:T.textLow,
-          fontFamily:"'Bebas Neue',sans-serif",fontWeight:"bold"}}>PAUSED</span>}
+          fontFamily:"'Poppins',sans-serif",fontWeight:"bold"}}>PAUSED</span>}
       </div>
     </div>
   );
@@ -252,7 +334,7 @@ function MusicPlayer({ T, isDark }) {
     border:`1.5px solid ${active?"rgba(34,197,94,0.6)":T.border}`,
     color:active?"#22C55E":T.textMid,
     borderRadius:9, cursor:"pointer",
-    fontFamily:"'Bebas Neue',sans-serif",fontSize:15,letterSpacing:2,transition:"all .2s",
+    fontFamily:"'Poppins',sans-serif",fontSize:15,letterSpacing:2,transition:"all .2s",
     fontWeight:"bold",
   });
 
@@ -280,7 +362,7 @@ function MusicPlayer({ T, isDark }) {
         width:"100%",padding:"14px",borderRadius:11,marginBottom:18,
         background:isDark?"rgba(245,166,35,0.09)":"rgba(200,120,0,0.10)",
         border:"2px dashed rgba(245,166,35,0.50)",color:"#D4900A",
-        fontFamily:"'Bebas Neue',sans-serif",fontSize:16,letterSpacing:2,cursor:"pointer",
+        fontFamily:"'Poppins',sans-serif",fontSize:16,letterSpacing:2,cursor:"pointer",
         fontWeight:"bold",
       }}>
         🎵 {playlist.length>0?`${playlist.length} SONGS LOADED — TAP TO CHANGE`:"TAP TO SELECT YOUR SONGS"}
@@ -293,7 +375,7 @@ function MusicPlayer({ T, isDark }) {
           border:`1px solid rgba(34,197,94,0.25)`,borderRadius:10,
           padding:"12px 14px",marginBottom:16,
         }}>
-          <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:16,color:"#22C55E",letterSpacing:4,marginBottom:6}}>
+          <div style={{fontFamily:"'Poppins',sans-serif",fontSize:16,color:"#22C55E",letterSpacing:4,marginBottom:6}}>
             HOW TO SELECT MULTIPLE SONGS:
           </div>
           <div style={{fontSize:14,color:T.textMid,lineHeight:1.6}}>
@@ -314,10 +396,10 @@ function MusicPlayer({ T, isDark }) {
             border:"1.5px solid rgba(34,197,94,0.30)",borderRadius:12,
             padding:"14px 16px",marginBottom:14,textAlign:"center",
           }}>
-            <div style={{fontSize:15,fontFamily:"'Bebas Neue',sans-serif",letterSpacing:2,color:T.textMid,marginBottom:5}}>
+            <div style={{fontSize:15,fontFamily:"'Poppins',sans-serif",letterSpacing:2,color:T.textMid,marginBottom:5}}>
               NOW PLAYING · {idx+1} / {activeList.length}
             </div>
-            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:19,letterSpacing:4,
+            <div style={{fontFamily:"'Poppins',sans-serif",fontSize:19,letterSpacing:4,
               color:T.text,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",fontWeight:"bold"}}>
               {trunc(cur.name,36)}
             </div>
@@ -342,7 +424,7 @@ function MusicPlayer({ T, isDark }) {
           </div>
           <div style={{display:"flex",justifyContent:"space-between",marginBottom:16}}>
             {[fmtDisp(Math.floor(progress)),duration>0?fmtDisp(Math.floor(duration)):"--:--"].map((t,i)=>(
-              <span key={i} style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:13,color:T.textLow,fontWeight:"bold"}}>{t}</span>
+              <span key={i} style={{fontFamily:"'Poppins',sans-serif",fontSize:13,color:T.textLow,fontWeight:"bold"}}>{t}</span>
             ))}
           </div>
 
@@ -374,7 +456,7 @@ function MusicPlayer({ T, isDark }) {
           {/* Playlist */}
           {activeList.length>1&&(
             <div style={{maxHeight:180,overflowY:"auto"}}>
-              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:12,letterSpacing:2,
+              <div style={{fontFamily:"'Poppins',sans-serif",fontSize:12,letterSpacing:2,
                 color:T.textLow,marginBottom:8,fontWeight:"bold"}}>
                 PLAYLIST · {mode==="shuffle"?"SHUFFLED 🔀":"IN ORDER ▶"}
               </div>
@@ -384,7 +466,7 @@ function MusicPlayer({ T, isDark }) {
                     background:i===idx?(isDark?"rgba(34,197,94,0.12)":"rgba(34,197,94,0.15)"):"transparent",
                     border:`1.5px solid ${i===idx?"rgba(34,197,94,0.35)":"transparent"}`,
                     display:"flex",alignItems:"center",gap:10,transition:"all .15s"}}>
-                  <span style={{fontSize:11,fontFamily:"'Bebas Neue',sans-serif",
+                  <span style={{fontSize:11,fontFamily:"'Poppins',sans-serif",
                     color:i===idx?"#22C55E":T.textLow,minWidth:22,fontWeight:"bold"}}>
                     {i===idx&&isPlaying?"▶":String(i+1).padStart(2,"0")}
                   </span>
@@ -465,14 +547,14 @@ function Stopwatch({ T, isDark }) {
 
       {/* Big display */}
       <div style={{background:T.surface,border:`1.5px solid ${T.border}`,
-        borderRadius:20,padding:"32px 20px",textAlign:"center",
+        borderRadius:20,padding:"20px 12px",textAlign:"center",
         boxShadow:isDark?"0 0 40px rgba(34,197,94,0.06)":"0 4px 20px rgba(0,0,0,0.06)"}}>
-        <div style={{fontSize:14,fontFamily:"'Bebas Neue',sans-serif",fontWeight:600,
+        <div style={{fontSize:14,fontFamily:"'Poppins',sans-serif",fontWeight:600,
           letterSpacing:2,color:T.textLow,marginBottom:10}}>
           {running?"⏱ RUNNING":elapsed>0?"⏸ PAUSED":"STOPWATCH"}
         </div>
-        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontWeight:800,fontSize:58,
-          lineHeight:1,letterSpacing:-1,
+        <div style={{fontFamily:"'Poppins',sans-serif",fontWeight:900,fontSize:42,
+          lineHeight:1,letterSpacing:0,
           color:running?"#22C55E":T.text,
           textShadow:running?"0 0 30px rgba(34,197,94,0.4)":"none",
           transition:"color .3s,text-shadow .3s"}}>
@@ -495,7 +577,7 @@ function Stopwatch({ T, isDark }) {
           background:elapsed>0?(isDark?"rgba(42,159,232,0.15)":"rgba(42,159,232,0.12)"):T.surface,
           border:`2px solid ${elapsed>0?"rgba(42,159,232,0.5)":T.border}`,
           color:elapsed>0?"#2A9FE8":T.textFaint,
-          fontFamily:"'Bebas Neue',sans-serif",fontWeight:700,fontSize:16,
+          fontFamily:"'Poppins',sans-serif",fontWeight:700,fontSize:18,
           cursor:elapsed>0?"pointer":"not-allowed",transition:"all .2s"}}>
           🏁 LAP
         </button>
@@ -504,7 +586,7 @@ function Stopwatch({ T, isDark }) {
           padding:"16px 8px",borderRadius:14,
           background:running?"linear-gradient(135deg,#E8302A,#C0241E)":"linear-gradient(135deg,#22C55E,#16A34A)",
           border:"none",color:"#fff",
-          fontFamily:"'Bebas Neue',sans-serif",fontWeight:800,fontSize:16,
+          fontFamily:"'Poppins',sans-serif",fontWeight:800,fontSize:18,
           cursor:"pointer",
           boxShadow:running?"0 4px 20px rgba(232,48,42,0.45)":"0 4px 20px rgba(34,197,94,0.45)",
           transition:"all .2s"}}>
@@ -516,7 +598,7 @@ function Stopwatch({ T, isDark }) {
           background:(elapsed>0||running)?(isDark?"rgba(245,166,35,0.12)":"rgba(245,166,35,0.10)"):T.surface,
           border:`2px solid ${(elapsed>0||running)?"rgba(245,166,35,0.5)":T.border}`,
           color:(elapsed>0||running)?"#F5A623":T.textFaint,
-          fontFamily:"'Bebas Neue',sans-serif",fontWeight:700,fontSize:16,
+          fontFamily:"'Poppins',sans-serif",fontWeight:700,fontSize:18,
           cursor:(elapsed>0||running)?"pointer":"not-allowed",transition:"all .2s"}}>
           🔄 RESET
         </button>
@@ -529,7 +611,7 @@ function Stopwatch({ T, isDark }) {
           <div style={{display:"grid",gridTemplateColumns:"44px 1fr 1fr",
             padding:"10px 16px",borderBottom:`1px solid ${T.border}`,background:T.cardBg}}>
             {["LAP","SPLIT","TOTAL"].map((h,i)=>(
-              <span key={i} style={{fontFamily:"'Bebas Neue',sans-serif",fontWeight:700,
+              <span key={i} style={{fontFamily:"'Poppins',sans-serif",fontWeight:700,
                 fontSize:13,letterSpacing:4,color:T.textLow,textAlign:i===0?"left":"right"}}>{h}</span>
             ))}
           </div>
@@ -540,16 +622,16 @@ function Stopwatch({ T, isDark }) {
                 padding:"12px 16px",
                 borderBottom:i<laps.length-1?`1px solid ${T.border}`:"none",
                 background:i===0&&running?(isDark?"rgba(34,197,94,0.05)":"rgba(34,197,94,0.06)"):"transparent"}}>
-                <span style={{fontFamily:"'Bebas Neue',sans-serif",fontWeight:700,fontSize:15,color:lapColor(lap.split_ms)}}>
+                <span style={{fontFamily:"'Poppins',sans-serif",fontWeight:700,fontSize:15,color:lapColor(lap.split_ms)}}>
                   #{lap.num}
                 </span>
-                <span style={{fontFamily:"'Bebas Neue',sans-serif",fontWeight:700,fontSize:16,
+                <span style={{fontFamily:"'Poppins',sans-serif",fontWeight:700,fontSize:16,
                   color:lapColor(lap.split_ms),textAlign:"right",display:"flex",alignItems:"center",justifyContent:"flex-end",gap:5}}>
                   {lap.split_ms===fastest&&splits.length>1&&<span style={{fontSize:10}}>🏆</span>}
                   {lap.split_ms===slowest&&splits.length>1&&<span style={{fontSize:10}}>🐢</span>}
-                  {fmt(lap.split_ms)}
+                  <span style={{fontSize:13}}>{fmt(lap.split_ms)}</span>
                 </span>
-                <span style={{fontFamily:"'Bebas Neue',sans-serif",fontWeight:500,fontSize:15,
+                <span style={{fontFamily:"'Poppins',sans-serif",fontWeight:500,fontSize:15,
                   color:T.textMid,textAlign:"right"}}>{fmt(lap.total)}</span>
               </div>
             ))}
@@ -573,7 +655,7 @@ function Stopwatch({ T, isDark }) {
 
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 export default function HIITIntervalTimer() {
-  const [theme,    setTheme]    = useState("dark");
+  const [theme,    setTheme]    = useState("light");
   const [tab,      setTab]      = useState("timer");
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [state,    setState]    = useState("idle");
@@ -585,8 +667,12 @@ export default function HIITIntervalTimer() {
   const [flash,    setFlash]    = useState(null);
   const [isCD,     setIsCD]     = useState(false);
 
-  const T      = THEMES[theme];
-  const isDark = theme==="dark";
+  const [soundPack, setSoundPack] = useState("default");
+
+  const activeThemeKey = theme;
+  const T = (activeThemeKey==="dark"||activeThemeKey==="light") ? THEMES[activeThemeKey] : {...THEMES.dark,...EXTRA_THEMES[activeThemeKey]};
+  const isDark = activeThemeKey !== "light";
+  const sounds = makeSounds(soundPack, playTone);
 
   // ── Keep screen on using Wake Lock API ──
   const wakeLockRef = useRef(null);
@@ -680,16 +766,17 @@ export default function HIITIntervalTimer() {
   const pCfg=PHASE_CONFIG[phase]||PHASE_CONFIG.work;
 
   const TABS=[
-    ["timer",     "⏱", "TIMER"],
-    ["settings",  "⚙", "SETUP"],
+    ["timer",     "⏱",  "TIMER"],
+    ["setup",     "⚙️", "SETUP"],
     ["stopwatch", "🕐", "STOPWATCH"],
     ["music",     "🎵", "MUSIC"],
+    ["store",     "🎨", "SETTINGS"],
   ];
 
   return (
     <div style={{minHeight:"100vh",background:T.bg,display:"flex",justifyContent:"center",
-      fontFamily:"'Bebas Neue',sans-serif",position:"relative",transition:"background .4s"}}>
-      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+      fontFamily:"'Poppins',sans-serif",position:"relative",transition:"background .4s"}}>
+      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
 
       {isDark&&(
         <div style={{position:"fixed",inset:0,pointerEvents:"none",
@@ -717,34 +804,19 @@ export default function HIITIntervalTimer() {
         ::-webkit-scrollbar-thumb{background:rgba(128,128,128,.3);border-radius:2px}
         a{text-decoration:none}
         button:active{transform:scale(0.96)}
+        *{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
       `}</style>
 
       <div style={{width:"100%",maxWidth:430,minHeight:"100vh",display:"flex",
         flexDirection:"column",animation:"slideUp .45s ease"}}>
 
         {/* ── HEADER ── */}
-        <div style={{padding:"10px 16px 8px",display:"flex",justifyContent:"space-between",
-          alignItems:"flex-start",borderBottom:`2px solid ${T.border}`,transition:"border-color .4s"}}>
-          <div>
-            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:26,letterSpacing:3,
-              color:T.accent,lineHeight:1}}>HIIT INTERVAL TIMER</div>
-            <div style={{fontSize:13,letterSpacing:2,color:T.textLow,marginTop:2,fontWeight:"bold"}}>
-              BY JAMAL AAMIR KHAN</div>
-          </div>
-          <div style={{display:"flex",alignItems:"center",gap:12}}>
-            <div style={{textAlign:"right"}}>
-              <div style={{fontSize:12,letterSpacing:2,color:T.textLow,fontWeight:"bold"}}>SESSION</div>
-              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:20,color:T.textMid}}>{fmtDisp(totalSecs)}</div>
-            </div>
-            <button onClick={()=>setTheme(t=>t==="dark"?"light":"dark")}
-              title={isDark?"Switch to Light Mode":"Switch to Dark Mode"}
-              style={{width:42,height:42,borderRadius:"50%",border:`2px solid ${T.border}`,
-                background:T.surface,cursor:"pointer",fontSize:20,
-                display:"flex",alignItems:"center",justifyContent:"center",transition:"all .3s",
-                boxShadow:!isDark?"0 2px 10px rgba(0,0,0,0.15)":"none"}}>
-              {isDark?"☀️":"🌙"}
-            </button>
-          </div>
+        <div style={{padding:"10px 16px 10px",textAlign:"center",
+          borderBottom:`2px solid ${T.border}`,transition:"border-color .4s"}}>
+          <div style={{fontFamily:"'Poppins',sans-serif",fontSize:20,fontWeight:900,
+            letterSpacing:1,color:T.accent,lineHeight:1.1}}>HIIT INTERVAL TIMER</div>
+          <div style={{fontFamily:"'Poppins',sans-serif",fontSize:11,fontWeight:600,
+            letterSpacing:2,color:T.textLow,marginTop:3}}>BY JAMAL AAMIR KHAN</div>
         </div>
 
         {/* ── TABS ── */}
@@ -753,12 +825,12 @@ export default function HIITIntervalTimer() {
           {TABS.map(([t,ic,l])=>(
             <button key={t} onClick={()=>setTab(t)} style={{
               flex:1,minWidth:0,padding:"7px 4px",background:"none",border:"none",
-              fontFamily:"'Bebas Neue',sans-serif",fontSize:13,fontWeight:700,
+              fontFamily:"'Poppins',sans-serif",fontSize:16,fontWeight:700,
               whiteSpace:"nowrap",letterSpacing:3,
               color:tab===t?T.tabActive:T.textLow,
               borderBottom:`3px solid ${tab===t?T.tabActive:"transparent"}`,
               cursor:"pointer",transition:"all .2s",
-            }}>{ic}<br/>{l}</button>
+            }}><span style={{fontSize:20,display:"block"}}>{ic}</span><span style={{fontSize:10,letterSpacing:1}}>{l}</span></button>
           ))}
         </div>
 
@@ -775,6 +847,14 @@ export default function HIITIntervalTimer() {
               </div>
             )}
 
+            {/* Session time above timer */}
+            <div style={{textAlign:"center",marginBottom:2}}>
+              <div style={{fontFamily:"'Poppins',sans-serif",fontSize:13,fontWeight:700,
+                letterSpacing:2,color:T.textLow,textTransform:"uppercase"}}>Session Time</div>
+              <div style={{fontFamily:"'Poppins',sans-serif",fontSize:26,fontWeight:900,
+                color:T.textMid,letterSpacing:3,lineHeight:1}}>{fmtDisp(totalSecs)}</div>
+            </div>
+
             <CircularTimer
               progress={state==="idle"?1:prog} phase={phase}
               timeLeft={state==="idle"?(settings.warmup>0?settings.warmup:settings.work):timeLeft}
@@ -784,7 +864,7 @@ export default function HIITIntervalTimer() {
 
             {state!=="idle"&&(
               <div style={{textAlign:"center"}}>
-                <span style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:3,
+                <span style={{fontFamily:"'Poppins',sans-serif",letterSpacing:3,
                   fontSize:13,color:T.textMid}}>
                   ROUND {curWorkRound} / {workRounds}
                 </span>
@@ -803,7 +883,7 @@ export default function HIITIntervalTimer() {
               <div style={{background:isDark?"rgba(34,197,94,0.09)":"rgba(34,197,94,0.12)",
                 border:"2px solid rgba(34,197,94,0.35)",borderRadius:14,
                 padding:"16px 18px",textAlign:"center"}}>
-                <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:26,letterSpacing:3,color:"#22C55E"}}>
+                <div style={{fontFamily:"'Poppins',sans-serif",fontSize:26,letterSpacing:3,color:"#22C55E"}}>
                   🏆 WORKOUT COMPLETE!</div>
                 <div style={{fontSize:14,color:T.textMid,marginTop:4,fontWeight:"bold"}}>
                   {stats.sessions} sessions · {stats.intervals} intervals · {stats.minutes} min</div>
@@ -816,7 +896,7 @@ export default function HIITIntervalTimer() {
                 <button onClick={handleStart} style={{
                   flex:1,padding:"12px",borderRadius:14,
                   background:"linear-gradient(135deg,#22C55E,#16A34A)",border:"none",
-                  color:"#fff",fontFamily:"'Bebas Neue',sans-serif",fontSize:22,letterSpacing:4,
+                  color:"#fff",fontFamily:"'Poppins',sans-serif",fontSize:22,letterSpacing:4,fontWeight:900,
                   cursor:"pointer",boxShadow:"0 4px 22px rgba(34,197,94,.45)"}}>
                   {state==="done"?"RESTART":"START"}
                 </button>
@@ -827,7 +907,7 @@ export default function HIITIntervalTimer() {
                     background:state==="paused"?"linear-gradient(135deg,#22C55E,#16A34A)":T.surface,
                     border:`2px solid ${state==="paused"?"transparent":T.border}`,
                     color:state==="paused"?"#fff":T.text,
-                    fontFamily:"'Bebas Neue',sans-serif",fontSize:20,letterSpacing:4,
+                    fontFamily:"'Poppins',sans-serif",fontSize:20,letterSpacing:4,
                     cursor:"pointer",transition:"all .2s",
                     boxShadow:state==="paused"?"0 4px 22px rgba(34,197,94,.45)":"none"}}>
                     {state==="paused"?"RESUME":"PAUSE"}
@@ -835,7 +915,7 @@ export default function HIITIntervalTimer() {
                   <button onClick={handleStop} style={{
                     flex:1,padding:"12px",borderRadius:14,
                     background:T.surface,border:`2px solid ${T.border}`,
-                    color:T.textMid,fontFamily:"'Bebas Neue',sans-serif",
+                    color:T.textMid,fontFamily:"'Poppins',sans-serif",
                     fontSize:18,letterSpacing:2,cursor:"pointer"}}>STOP</button>
                 </>
               )}
@@ -847,7 +927,7 @@ export default function HIITIntervalTimer() {
                   <div key={p} style={{background:T.cardBg,borderRadius:10,
                     padding:"8px 6px",textAlign:"center",border:`1.5px solid ${T.border}`}}>
                     <div style={{fontSize:20}}>{PHASE_CONFIG[p].icon}</div>
-                    <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:17,
+                    <div style={{fontFamily:"'Poppins',sans-serif",fontSize:17,
                       color:PHASE_CONFIG[p].color,marginTop:2}}>{fmtDisp(settings[p])}</div>
                     <div style={{fontSize:9,letterSpacing:2,color:T.textLow,marginTop:1}}>
                       {PHASE_CONFIG[p].label}</div>
@@ -859,9 +939,9 @@ export default function HIITIntervalTimer() {
         )}
 
         {/* ══ SETTINGS TAB ══ */}
-        {tab==="settings"&&(
+        {tab==="setup"&&(
           <div style={{flex:1,padding:"22px",display:"flex",flexDirection:"column",overflowY:"auto"}}>
-            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:14,letterSpacing:3,
+            <div style={{fontFamily:"'Poppins',sans-serif",fontSize:14,letterSpacing:3,
               color:T.textLow,marginBottom:16,fontWeight:"bold"}}>
               SET INTERVALS — MINUTES : SECONDS
             </div>
@@ -875,15 +955,15 @@ export default function HIITIntervalTimer() {
               border:`1.5px solid ${T.border}`,marginBottom:10}}>
               <div style={{display:"flex",alignItems:"center",gap:10}}>
                 <span style={{fontSize:22}}>🔄</span>
-                <span style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:2,
-                  fontSize:18,color:T.textMid,fontWeight:"bold"}}>ROUNDS</span>
+                <span style={{fontFamily:"'Poppins',sans-serif",letterSpacing:2,
+                  fontSize:20,color:T.textMid,fontWeight:"bold"}}>ROUNDS</span>
               </div>
               <div style={{display:"flex",alignItems:"center",gap:14}}>
                 <button onClick={()=>setSettings(s=>({...s,rounds:Math.max(1,s.rounds-1)}))} style={{
                   width:38,height:38,borderRadius:9,cursor:"pointer",
                   background:T.inputBg,border:`1.5px solid ${T.borderMid}`,
                   color:T.text,fontSize:22,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:"bold"}}>−</button>
-                <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:30,
+                <span style={{fontFamily:"'Poppins',sans-serif",fontSize:30,
                   color:T.text,minWidth:38,textAlign:"center",fontWeight:"bold"}}>{settings.rounds}</span>
                 <button onClick={()=>setSettings(s=>({...s,rounds:Math.min(30,s.rounds+1)}))} style={{
                   width:38,height:38,borderRadius:9,cursor:"pointer",
@@ -894,7 +974,7 @@ export default function HIITIntervalTimer() {
 
             {/* Presets */}
             <div style={{marginTop:14,marginBottom:12}}>
-              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:13,letterSpacing:3,
+              <div style={{fontFamily:"'Poppins',sans-serif",fontSize:13,letterSpacing:3,
                 color:T.textLow,marginBottom:12,fontWeight:"bold"}}>QUICK PRESETS</div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
                 {[
@@ -905,17 +985,34 @@ export default function HIITIntervalTimer() {
                   <button key={p.name} onClick={()=>setSettings(p.cfg)} style={{
                     padding:"13px 6px",borderRadius:10,cursor:"pointer",
                     background:T.cardBg,border:`2px solid ${p.color}50`,
-                    color:p.color,fontFamily:"'Bebas Neue',sans-serif",
-                    fontSize:14,letterSpacing:2,fontWeight:"bold"}}>
+                    color:p.color,fontFamily:"'Poppins',sans-serif",
+                    fontSize:16,letterSpacing:2,fontWeight:"bold"}}>
                     {p.name}
                   </button>
                 ))}
+              </div>
+              <div style={{fontFamily:"'Poppins',sans-serif",fontSize:13,letterSpacing:3,
+                color:T.accent,marginBottom:10,marginTop:14}}>⚡ PRO PRESETS</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                {EXTRA_PRESETS.map(p=>{
+                  return (
+                    <button key={p.name} onClick={()=>{
+                      setSettings(p.cfg);
+                    }} style={{
+                      padding:"11px 8px",borderRadius:10,cursor:"pointer",
+                      background:T.cardBg,border:`2px solid ${p.color}60`,
+                      color:p.color,
+                      fontFamily:"'Poppins',sans-serif",fontSize:13,letterSpacing:2}}>
+                      {p.icon} {p.name}
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <button onClick={()=>setSettings(DEFAULT_SETTINGS)} style={{
               padding:"13px",borderRadius:10,cursor:"pointer",
               background:"transparent",border:`2px solid ${T.border}`,
-              color:T.textMid,fontFamily:"'Bebas Neue',sans-serif",
+              color:T.textMid,fontFamily:"'Poppins',sans-serif",
               fontSize:14,letterSpacing:2,fontWeight:"bold"}}>RESET TO DEFAULT</button>
           </div>
         )}
@@ -934,10 +1031,112 @@ export default function HIITIntervalTimer() {
           </div>
         )}
 
+        {/* ══ STORE / UNLOCK TAB ══ */}
+        {tab==="store"&&(
+          <div style={{flex:1,padding:"16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:18}}>
+
+            {/* THEMES */}
+            <div>
+              <div style={{fontFamily:"'Poppins',sans-serif",fontSize:14,letterSpacing:3,
+                color:T.textLow,marginBottom:10}}>🎨 THEMES</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                {/* Base themes */}
+                {[{key:"dark",name:"DARK",icon:"🌙"},{key:"light",name:"LIGHT",icon:"☀️"}].map(th=>(
+                  <button key={th.key} onClick={()=>setTheme(th.key)} style={{
+                    padding:"12px",borderRadius:12,cursor:"pointer",
+                    background:activeThemeKey===th.key?"linear-gradient(135deg,#22C55E,#16A34A)":T.surface,
+                    border:`2px solid ${activeThemeKey===th.key?"transparent":T.border}`,
+                    color:activeThemeKey===th.key?"#fff":T.textMid,
+                    fontFamily:"'Poppins',sans-serif",fontSize:13,letterSpacing:2}}>
+                    {th.icon} {th.name}<br/>
+                    <span style={{fontSize:10,color:activeThemeKey===th.key?"#fff":"#22C55E"}}>{activeThemeKey===th.key?"✅ ACTIVE":"TAP TO USE"}</span>
+                  </button>
+                ))}
+                {/* Extra themes */}
+                {Object.entries(EXTRA_THEMES).map(([key,th])=>{
+                  return (
+                    <button key={key} onClick={()=>{ setTheme(key); }} style={{
+                      padding:"12px",borderRadius:12,cursor:"pointer",
+                      background:activeThemeKey===key?"linear-gradient(135deg,#22C55E,#16A34A)":T.surface,
+                      border:`2px solid ${activeThemeKey===key?"transparent":T.border}`,
+                      color:activeThemeKey===key?"#fff":T.textMid,
+                      fontFamily:"'Poppins',sans-serif",fontSize:13,letterSpacing:2}}>
+                      {th.icon} {th.name}<br/>
+                      <span style={{fontSize:10,color:activeThemeKey===key?"#fff":"#22C55E"}}>
+                        {activeThemeKey===key?"✅ ACTIVE":"TAP TO USE"}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* SOUND PACKS */}
+            <div>
+              <div style={{fontFamily:"'Poppins',sans-serif",fontSize:14,letterSpacing:3,
+                color:T.textLow,marginBottom:10}}>🔊 SOUND PACKS</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                {Object.entries(SOUND_PACKS).map(([key,sp])=>{
+                  return (
+                    <button key={key} onClick={()=>{ setSoundPack(key); }} style={{
+                      padding:"12px",borderRadius:12,cursor:"pointer",
+                      background:soundPack===key?"linear-gradient(135deg,#22C55E,#16A34A)":T.surface,
+                      border:`2px solid ${soundPack===key?"transparent":T.border}`,
+                      color:soundPack===key?"#fff":T.textMid,
+                      fontFamily:"'Poppins',sans-serif",fontSize:13,letterSpacing:2}}>
+                      {sp.icon} {sp.name}<br/>
+                      <span style={{fontSize:10,color:soundPack===key?"#fff":"#22C55E"}}>
+                        {soundPack===key?"✅ ACTIVE":"TAP TO USE"}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* PRO PRESETS */}
+            <div>
+              <div style={{fontFamily:"'Poppins',sans-serif",fontSize:14,letterSpacing:3,
+                color:T.textLow,marginBottom:10}}>⚡ PRO PRESETS</div>
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {EXTRA_PRESETS.map(p=>{
+                  return (
+                    <div key={p.name} style={{
+                      display:"flex",alignItems:"center",justifyContent:"space-between",
+                      padding:"12px 14px",borderRadius:12,
+                      background:T.surface,border:`2px solid ${p.color}40`}}>
+                      <div>
+                        <div style={{fontFamily:"'Poppins',sans-serif",fontSize:15,
+                          letterSpacing:2,color:p.color}}>
+                          {p.icon} {p.name}
+                        </div>
+                        <div style={{fontSize:11,color:T.textFaint,marginTop:2}}>{p.desc}</div>
+                      </div>
+                      <button onClick={()=>{
+                        setSettings(p.cfg); setTab("setup");
+                      }} style={{
+                        padding:"8px 14px",borderRadius:9,cursor:"pointer",border:"none",
+                        background:"linear-gradient(135deg,#22C55E,#16A34A)",
+                        color:"#fff",
+                        fontFamily:"'Poppins',sans-serif",fontSize:12,letterSpacing:1}}>
+                        USE ▶
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+        )}
+
+        {/* ── MODAL ── */}
+
+
         {/* ── FOOTER ── */}
         <div style={{padding:"10px 16px 14px",borderTop:`2px solid ${T.border}`,
           display:"flex",flexDirection:"column",alignItems:"center",gap:8,transition:"border-color .4s"}}>
-          <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:12,letterSpacing:3,
+          <div style={{fontFamily:"'Poppins',sans-serif",fontSize:12,letterSpacing:3,
             color:T.textLow,fontWeight:"bold"}}>FOLLOW JAMAL AAMIR KHAN</div>
           <div style={{display:"flex",gap:14}}>
             <a href="https://www.facebook.com/jamalaamirk/" target="_blank" rel="noopener noreferrer"
@@ -947,7 +1146,7 @@ export default function HIITIntervalTimer() {
               <svg width="22" height="22" viewBox="0 0 24 24" fill="#1877F2">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
-              <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:14,letterSpacing:4,
+              <span style={{fontFamily:"'Poppins',sans-serif",fontSize:14,letterSpacing:4,
                 color:"#1877F2",fontWeight:"bold"}}>FACEBOOK</span>
             </a>
             <a href="https://www.instagram.com/jamalaamirkhan/" target="_blank" rel="noopener noreferrer"
@@ -964,7 +1163,7 @@ export default function HIITIntervalTimer() {
                 </defs>
                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
               </svg>
-              <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:14,letterSpacing:4,fontWeight:"bold",
+              <span style={{fontFamily:"'Poppins',sans-serif",fontSize:14,letterSpacing:4,fontWeight:"bold",
                 background:"linear-gradient(90deg,#F58529,#DD2A7B)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>
                 INSTAGRAM</span>
             </a>
