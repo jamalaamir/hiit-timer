@@ -588,6 +588,26 @@ export default function HIITIntervalTimer() {
   const T      = THEMES[theme];
   const isDark = theme==="dark";
 
+  // ── Keep screen on using Wake Lock API ──
+  const wakeLockRef = useRef(null);
+  useEffect(()=>{
+    const acquire = async () => {
+      try {
+        if("wakeLock" in navigator){
+          wakeLockRef.current = await navigator.wakeLock.request("screen");
+        }
+      } catch(e){ console.log("Wake lock failed:", e); }
+    };
+    acquire();
+    // Re-acquire when tab becomes visible again
+    const onVisible = () => { if(document.visibilityState==="visible") acquire(); };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      wakeLockRef.current?.release();
+    };
+  },[]);
+
   const audioCtx   = useRef(null);
   const settRef    = useRef(settings);
   const phaseIdxRef= useRef(phaseIdx);
