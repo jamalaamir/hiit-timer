@@ -78,19 +78,19 @@ function MinSecInput({ label, icon, color, valueSecs, onChange, T }) {
   const commit=(m,s)=>onChange(toSecs(m,s));
   const iStyle={width:58,padding:"10px 6px",textAlign:"center",background:T.inputBg,
     border:`1.5px solid ${T.borderMid}`,borderRadius:9,color:T.text,
-    fontFamily:"'Bebas Neue',sans-serif",fontSize:26,letterSpacing:1,outline:"none"};
+    fontFamily:"'Poppins',sans-serif",fontSize:26,letterSpacing:1,outline:"none"};
   return (
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",
       padding:"14px 18px",borderRadius:13,background:T.surface,
       border:`1.5px solid ${T.border}`,marginBottom:10}}>
       <div style={{display:"flex",alignItems:"center",gap:10}}>
         <span style={{fontSize:22}}>{icon}</span>
-        <span style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:2,fontSize:16,color:color||T.textMid,fontWeight:"bold"}}>{label}</span>
+        <span style={{fontFamily:"'Poppins',sans-serif",letterSpacing:0.3,fontSize:16,color:color||T.textMid,fontWeight:"bold"}}>{label}</span>
       </div>
       <div style={{display:"flex",alignItems:"center",gap:6}}>
         <input type="number" min={0} max={99} value={mVal} style={iStyle}
           onChange={e=>{setMVal(e.target.value);commit(e.target.value,sVal);}} onFocus={e=>e.target.select()}/>
-        <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:28,color:T.textLow}}>:</span>
+        <span style={{fontFamily:"'Poppins',sans-serif",fontSize:28,color:T.textLow}}>:</span>
         <input type="number" min={0} max={59} value={sVal} style={iStyle}
           onChange={e=>{setSVal(e.target.value);commit(mVal,e.target.value);}} onFocus={e=>e.target.select()}/>
         <div style={{marginLeft:4}}>
@@ -125,19 +125,19 @@ function CircularTimer({ progress, phase, timeLeft, isPaused, isCountdown, T, is
       </svg>
       <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",
         alignItems:"center",justifyContent:"center",gap:4}}>
-        <span style={{fontSize:13,fontFamily:"'Bebas Neue',sans-serif",letterSpacing:4,
+        <span style={{fontSize:13,fontFamily:"'Poppins',sans-serif",letterSpacing:1,
           color:isCountdown?"#FF7043":cfg.color,fontWeight:"bold"}}>
           {isCountdown?"⚠ GET READY":`${cfg.icon} ${cfg.label}`}
         </span>
-        <span style={{fontSize:isCountdown?80:68,fontFamily:"'Bebas Neue',sans-serif",lineHeight:1,
+        <span style={{fontSize:isCountdown?72:60,fontFamily:"'Poppins',sans-serif",lineHeight:1,fontWeight:800,
           color:isCountdown?"#FF3D00":T.text,
           textShadow:`0 0 30px ${isCountdown?"#FF3D0080":cfg.color+"60"}`,
           transition:"font-size .2s,color .2s",
           animation:isCountdown?"popIn .25s ease":"none"}}>
           {fmtDisp(timeLeft)}
         </span>
-        {isPaused&&<span style={{fontSize:13,letterSpacing:4,color:T.textLow,
-          fontFamily:"'Bebas Neue',sans-serif",fontWeight:"bold"}}>PAUSED</span>}
+        {isPaused&&<span style={{fontSize:13,letterSpacing:1,color:T.textLow,
+          fontFamily:"'Poppins',sans-serif",fontWeight:"bold"}}>PAUSED</span>}
       </div>
     </div>
   );
@@ -252,7 +252,7 @@ function MusicPlayer({ T, isDark }) {
     border:`1.5px solid ${active?"rgba(34,197,94,0.6)":T.border}`,
     color:active?"#22C55E":T.textMid,
     borderRadius:9, cursor:"pointer",
-    fontFamily:"'Bebas Neue',sans-serif",fontSize:14,letterSpacing:2,transition:"all .2s",
+    fontFamily:"'Poppins',sans-serif",fontSize:14,letterSpacing:0.3,transition:"all .2s",
     fontWeight:"bold",
   });
 
@@ -280,7 +280,7 @@ function MusicPlayer({ T, isDark }) {
         width:"100%",padding:"14px",borderRadius:11,marginBottom:18,
         background:isDark?"rgba(245,166,35,0.09)":"rgba(200,120,0,0.10)",
         border:"2px dashed rgba(245,166,35,0.50)",color:"#D4900A",
-        fontFamily:"'Bebas Neue',sans-serif",fontSize:15,letterSpacing:2,cursor:"pointer",
+        fontFamily:"'Poppins',sans-serif",fontSize:15,letterSpacing:0.3,cursor:"pointer",
         fontWeight:"bold",
       }}>
         🎵 {playlist.length>0?`${playlist.length} SONGS LOADED — TAP TO CHANGE`:"TAP TO SELECT YOUR SONGS"}
@@ -293,7 +293,7 @@ function MusicPlayer({ T, isDark }) {
           border:`1px solid rgba(34,197,94,0.25)`,borderRadius:10,
           padding:"12px 14px",marginBottom:16,
         }}>
-          <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:14,color:"#22C55E",letterSpacing:1,marginBottom:6}}>
+          <div style={{fontFamily:"'Poppins',sans-serif",fontSize:14,color:"#22C55E",letterSpacing:1,marginBottom:6}}>
             HOW TO SELECT MULTIPLE SONGS:
           </div>
           <div style={{fontSize:13,color:T.textMid,lineHeight:1.6}}>
@@ -314,10 +314,10 @@ function MusicPlayer({ T, isDark }) {
             border:"1.5px solid rgba(34,197,94,0.30)",borderRadius:12,
             padding:"14px 16px",marginBottom:14,textAlign:"center",
           }}>
-            <div style={{fontSize:13,fontFamily:"'Bebas Neue',sans-serif",letterSpacing:2,color:T.textMid,marginBottom:5}}>
+            <div style={{fontSize:13,fontFamily:"'Poppins',sans-serif",letterSpacing:0.3,color:T.textMid,marginBottom:5}}>
               NOW PLAYING · {idx+1} / {activeList.length}
             </div>
-            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:17,letterSpacing:1,
+            <div style={{fontFamily:"'Poppins',sans-serif",fontSize:17,letterSpacing:1,
               color:T.text,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",fontWeight:"bold"}}>
               {trunc(cur.name,36)}
             </div>
@@ -342,7 +342,7 @@ function MusicPlayer({ T, isDark }) {
           </div>
           <div style={{display:"flex",justifyContent:"space-between",marginBottom:16}}>
             {[fmtDisp(Math.floor(progress)),duration>0?fmtDisp(Math.floor(duration)):"--:--"].map((t,i)=>(
-              <span key={i} style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:13,color:T.textLow,fontWeight:"bold"}}>{t}</span>
+              <span key={i} style={{fontFamily:"'Poppins',sans-serif",fontSize:13,color:T.textLow,fontWeight:"bold"}}>{t}</span>
             ))}
           </div>
 
@@ -374,7 +374,7 @@ function MusicPlayer({ T, isDark }) {
           {/* Playlist */}
           {activeList.length>1&&(
             <div style={{maxHeight:180,overflowY:"auto"}}>
-              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:12,letterSpacing:2,
+              <div style={{fontFamily:"'Poppins',sans-serif",fontSize:12,letterSpacing:0.3,
                 color:T.textLow,marginBottom:8,fontWeight:"bold"}}>
                 PLAYLIST · {mode==="shuffle"?"SHUFFLED 🔀":"IN ORDER ▶"}
               </div>
@@ -384,7 +384,7 @@ function MusicPlayer({ T, isDark }) {
                     background:i===idx?(isDark?"rgba(34,197,94,0.12)":"rgba(34,197,94,0.15)"):"transparent",
                     border:`1.5px solid ${i===idx?"rgba(34,197,94,0.35)":"transparent"}`,
                     display:"flex",alignItems:"center",gap:10,transition:"all .15s"}}>
-                  <span style={{fontSize:11,fontFamily:"'Bebas Neue',sans-serif",
+                  <span style={{fontSize:11,fontFamily:"'Poppins',sans-serif",
                     color:i===idx?"#22C55E":T.textLow,minWidth:22,fontWeight:"bold"}}>
                     {i===idx&&isPlaying?"▶":String(i+1).padStart(2,"0")}
                   </span>
@@ -400,6 +400,171 @@ function MusicPlayer({ T, isDark }) {
       ):(
         <div style={{textAlign:"center",padding:"20px 0",color:T.textLow,fontSize:14,letterSpacing:1,fontWeight:"bold"}}>
           No songs loaded yet
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── STOPWATCH ───────────────────────────────────────────────────────────────
+function Stopwatch({ T, isDark }) {
+  const [running,  setRunning]  = useState(false);
+  const [elapsed,  setElapsed]  = useState(0);
+  const [laps,     setLaps]     = useState([]);
+  const startRef = useRef(null);
+  const rafRef   = useRef(null);
+  const savedRef = useRef(0);
+
+  const fmt = ms => {
+    const totalCs = Math.floor(ms/10);
+    const cs   = totalCs%100;
+    const secs = Math.floor(totalCs/100)%60;
+    const mins = Math.floor(totalCs/6000)%60;
+    const hrs  = Math.floor(totalCs/360000);
+    return `${String(hrs).padStart(2,"0")}:${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}.${String(cs).padStart(2,"0")}`;
+  };
+
+  const tick = useCallback(()=>{
+    setElapsed(savedRef.current+(Date.now()-startRef.current));
+    rafRef.current=requestAnimationFrame(tick);
+  },[]);
+
+  const handleStartStop=()=>{
+    if(running){
+      cancelAnimationFrame(rafRef.current);
+      savedRef.current=savedRef.current+(Date.now()-startRef.current);
+      setRunning(false);
+    } else {
+      startRef.current=Date.now();
+      rafRef.current=requestAnimationFrame(tick);
+      setRunning(true);
+    }
+  };
+
+  const handleLap=()=>{
+    if(!running&&elapsed===0) return;
+    const prev=laps.reduce((a,l)=>a+l.split_ms,0);
+    setLaps(l=>[{num:l.length+1,total:elapsed,split_ms:elapsed-prev},...l]);
+  };
+
+  const handleReset=()=>{
+    cancelAnimationFrame(rafRef.current);
+    setRunning(false); setElapsed(0); setLaps([]);
+    savedRef.current=0;
+  };
+
+  useEffect(()=>()=>cancelAnimationFrame(rafRef.current),[]);
+
+  const splits  = laps.map(l=>l.split_ms);
+  const fastest = splits.length>1 ? Math.min(...splits) : null;
+  const slowest = splits.length>1 ? Math.max(...splits) : null;
+  const lapColor= ms=>{ if(splits.length<2) return T.text; if(ms===fastest) return "#22C55E"; if(ms===slowest) return "#E8302A"; return T.textMid; };
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:20,paddingBottom:16}}>
+
+      {/* Big display */}
+      <div style={{background:T.surface,border:`1.5px solid ${T.border}`,
+        borderRadius:20,padding:"32px 20px",textAlign:"center",
+        boxShadow:isDark?"0 0 40px rgba(34,197,94,0.06)":"0 4px 20px rgba(0,0,0,0.06)"}}>
+        <div style={{fontSize:12,fontFamily:"'Poppins',sans-serif",fontWeight:600,
+          letterSpacing:2,color:T.textLow,marginBottom:10}}>
+          {running?"⏱ RUNNING":elapsed>0?"⏸ PAUSED":"STOPWATCH"}
+        </div>
+        <div style={{fontFamily:"'Poppins',sans-serif",fontWeight:800,fontSize:38,
+          lineHeight:1,letterSpacing:-1,
+          color:running?"#22C55E":T.text,
+          textShadow:running?"0 0 30px rgba(34,197,94,0.4)":"none",
+          transition:"color .3s,text-shadow .3s"}}>
+          {fmt(elapsed)}
+        </div>
+        <div style={{fontSize:9,fontWeight:500,color:T.textFaint,letterSpacing:2,marginTop:6}}>
+          HH : MM : SS . cc
+        </div>
+        {laps.length>0&&(
+          <div style={{marginTop:12,fontSize:14,fontWeight:600,color:T.textLow}}>
+            LAP {laps.length+1} · {fmt(elapsed-laps.reduce((a,l)=>a+l.split_ms,0))}
+          </div>
+        )}
+      </div>
+
+      {/* Buttons */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
+        <button onClick={handleLap} disabled={elapsed===0} style={{
+          padding:"16px 8px",borderRadius:14,
+          background:elapsed>0?(isDark?"rgba(42,159,232,0.15)":"rgba(42,159,232,0.12)"):T.surface,
+          border:`2px solid ${elapsed>0?"rgba(42,159,232,0.5)":T.border}`,
+          color:elapsed>0?"#2A9FE8":T.textFaint,
+          fontFamily:"'Poppins',sans-serif",fontWeight:700,fontSize:14,
+          cursor:elapsed>0?"pointer":"not-allowed",transition:"all .2s"}}>
+          🏁 LAP
+        </button>
+
+        <button onClick={handleStartStop} style={{
+          padding:"16px 8px",borderRadius:14,
+          background:running?"linear-gradient(135deg,#E8302A,#C0241E)":"linear-gradient(135deg,#22C55E,#16A34A)",
+          border:"none",color:"#fff",
+          fontFamily:"'Poppins',sans-serif",fontWeight:800,fontSize:14,
+          cursor:"pointer",
+          boxShadow:running?"0 4px 20px rgba(232,48,42,0.45)":"0 4px 20px rgba(34,197,94,0.45)",
+          transition:"all .2s"}}>
+          {running?"⏹ STOP":elapsed>0?"▶ RESUME":"▶ START"}
+        </button>
+
+        <button onClick={handleReset} disabled={elapsed===0&&!running} style={{
+          padding:"16px 8px",borderRadius:14,
+          background:(elapsed>0||running)?(isDark?"rgba(245,166,35,0.12)":"rgba(245,166,35,0.10)"):T.surface,
+          border:`2px solid ${(elapsed>0||running)?"rgba(245,166,35,0.5)":T.border}`,
+          color:(elapsed>0||running)?"#F5A623":T.textFaint,
+          fontFamily:"'Poppins',sans-serif",fontWeight:700,fontSize:14,
+          cursor:(elapsed>0||running)?"pointer":"not-allowed",transition:"all .2s"}}>
+          🔄 RESET
+        </button>
+      </div>
+
+      {/* Lap list */}
+      {laps.length>0&&(
+        <div style={{background:T.surface,border:`1.5px solid ${T.border}`,borderRadius:16,overflow:"hidden"}}>
+          {/* Header */}
+          <div style={{display:"grid",gridTemplateColumns:"44px 1fr 1fr",
+            padding:"10px 16px",borderBottom:`1px solid ${T.border}`,background:T.cardBg}}>
+            {["LAP","SPLIT","TOTAL"].map((h,i)=>(
+              <span key={i} style={{fontFamily:"'Poppins',sans-serif",fontWeight:700,
+                fontSize:11,letterSpacing:1,color:T.textLow,textAlign:i===0?"left":"right"}}>{h}</span>
+            ))}
+          </div>
+          {/* Rows */}
+          <div style={{maxHeight:240,overflowY:"auto"}}>
+            {laps.map((lap,i)=>(
+              <div key={i} style={{display:"grid",gridTemplateColumns:"44px 1fr 1fr",
+                padding:"12px 16px",
+                borderBottom:i<laps.length-1?`1px solid ${T.border}`:"none",
+                background:i===0&&running?(isDark?"rgba(34,197,94,0.05)":"rgba(34,197,94,0.06)"):"transparent"}}>
+                <span style={{fontFamily:"'Poppins',sans-serif",fontWeight:700,fontSize:13,color:lapColor(lap.split_ms)}}>
+                  #{lap.num}
+                </span>
+                <span style={{fontFamily:"'Poppins',sans-serif",fontWeight:700,fontSize:14,
+                  color:lapColor(lap.split_ms),textAlign:"right",display:"flex",alignItems:"center",justifyContent:"flex-end",gap:5}}>
+                  {lap.split_ms===fastest&&splits.length>1&&<span style={{fontSize:10}}>🏆</span>}
+                  {lap.split_ms===slowest&&splits.length>1&&<span style={{fontSize:10}}>🐢</span>}
+                  {fmt(lap.split_ms)}
+                </span>
+                <span style={{fontFamily:"'Poppins',sans-serif",fontWeight:500,fontSize:13,
+                  color:T.textMid,textAlign:"right"}}>{fmt(lap.total)}</span>
+              </div>
+            ))}
+          </div>
+          {/* Summary bar */}
+          {laps.length>1&&(
+            <div style={{padding:"10px 16px",borderTop:`1px solid ${T.border}`,
+              background:T.cardBg,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <span style={{fontSize:12,fontWeight:700,color:T.textLow}}>{laps.length} LAPS</span>
+              <div style={{display:"flex",gap:16}}>
+                <span style={{fontSize:12,fontWeight:700,color:"#22C55E"}}>🏆 {fmt(fastest)}</span>
+                <span style={{fontSize:12,fontWeight:700,color:"#E8302A"}}>🐢 {fmt(slowest)}</span>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -494,12 +659,17 @@ export default function HIITIntervalTimer() {
   const totalSecs=(settings.warmup||0)+settings.work*settings.rounds+settings.rest*Math.max(0,settings.rounds-1);
   const pCfg=PHASE_CONFIG[phase]||PHASE_CONFIG.work;
 
-  const TABS=[["timer","⏱","TIMER"],["settings","⚙","SETUP"],["music","🎵","MUSIC"]];
+  const TABS=[
+    ["timer",     "⏱", "TIMER"],
+    ["settings",  "⚙", "SETUP"],
+    ["stopwatch", "🕐", "STOPWATCH"],
+    ["music",     "🎵", "MUSIC"],
+  ];
 
   return (
     <div style={{minHeight:"100vh",background:T.bg,display:"flex",justifyContent:"center",
-      fontFamily:"'Rajdhani',sans-serif",position:"relative",overflow:"hidden",transition:"background .4s"}}>
-      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+      fontFamily:"'Poppins',sans-serif",position:"relative",overflow:"hidden",transition:"background .4s"}}>
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 
       {isDark&&(
         <div style={{position:"fixed",inset:0,pointerEvents:"none",
@@ -536,15 +706,15 @@ export default function HIITIntervalTimer() {
         <div style={{padding:"20px 22px 14px",display:"flex",justifyContent:"space-between",
           alignItems:"flex-start",borderBottom:`2px solid ${T.border}`,transition:"border-color .4s"}}>
           <div>
-            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:24,letterSpacing:3,
+            <div style={{fontFamily:"'Poppins',sans-serif",fontSize:24,letterSpacing:0.5,
               color:T.accent,lineHeight:1}}>HIIT INTERVAL TIMER</div>
-            <div style={{fontSize:12,letterSpacing:2,color:T.textLow,marginTop:2,fontWeight:"bold"}}>
+            <div style={{fontSize:12,letterSpacing:0.3,color:T.textLow,marginTop:2,fontWeight:"bold"}}>
               BY JAMAL AAMIR KHAN</div>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <div style={{textAlign:"right"}}>
-              <div style={{fontSize:11,letterSpacing:2,color:T.textLow,fontWeight:"bold"}}>SESSION</div>
-              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:19,color:T.textMid}}>{fmtDisp(totalSecs)}</div>
+              <div style={{fontSize:11,letterSpacing:0.3,color:T.textLow,fontWeight:"bold"}}>SESSION</div>
+              <div style={{fontFamily:"'Poppins',sans-serif",fontSize:19,color:T.textMid}}>{fmtDisp(totalSecs)}</div>
             </div>
             <button onClick={()=>setTheme(t=>t==="dark"?"light":"dark")}
               title={isDark?"Switch to Light Mode":"Switch to Dark Mode"}
@@ -558,15 +728,17 @@ export default function HIITIntervalTimer() {
         </div>
 
         {/* ── TABS ── */}
-        <div style={{display:"flex",borderBottom:`2px solid ${T.border}`,padding:"0 22px"}}>
+        <div style={{display:"flex",borderBottom:`2px solid ${T.border}`,
+          overflowX:"auto",scrollbarWidth:"none",msOverflowStyle:"none"}}>
           {TABS.map(([t,ic,l])=>(
             <button key={t} onClick={()=>setTab(t)} style={{
-              flex:1,padding:"14px 0",background:"none",border:"none",
-              fontFamily:"'Bebas Neue',sans-serif",letterSpacing:2,fontSize:14,
+              flex:1,minWidth:0,padding:"13px 6px",background:"none",border:"none",
+              fontFamily:"'Poppins',sans-serif",fontSize:11,fontWeight:700,
+              whiteSpace:"nowrap",
               color:tab===t?T.tabActive:T.textLow,
               borderBottom:`3px solid ${tab===t?T.tabActive:"transparent"}`,
-              cursor:"pointer",transition:"all .2s",fontWeight:"bold",
-            }}>{ic} {l}</button>
+              cursor:"pointer",transition:"all .2s",
+            }}>{ic}<br/>{l}</button>
           ))}
         </div>
 
@@ -592,7 +764,7 @@ export default function HIITIntervalTimer() {
 
             {state!=="idle"&&(
               <div style={{textAlign:"center"}}>
-                <span style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:3,
+                <span style={{fontFamily:"'Poppins',sans-serif",letterSpacing:0.5,
                   fontSize:15,color:T.textMid,fontWeight:"bold"}}>
                   ROUND {curWorkRound} / {workRounds}
                 </span>
@@ -611,7 +783,7 @@ export default function HIITIntervalTimer() {
               <div style={{background:isDark?"rgba(34,197,94,0.09)":"rgba(34,197,94,0.12)",
                 border:"2px solid rgba(34,197,94,0.35)",borderRadius:14,
                 padding:"16px 18px",textAlign:"center"}}>
-                <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:24,letterSpacing:3,color:"#22C55E"}}>
+                <div style={{fontFamily:"'Poppins',sans-serif",fontSize:24,letterSpacing:0.5,color:"#22C55E"}}>
                   🏆 WORKOUT COMPLETE!</div>
                 <div style={{fontSize:14,color:T.textMid,marginTop:4,fontWeight:"bold"}}>
                   {stats.sessions} sessions · {stats.intervals} intervals · {stats.minutes} min</div>
@@ -624,7 +796,7 @@ export default function HIITIntervalTimer() {
                 <button onClick={handleStart} style={{
                   flex:1,padding:"18px",borderRadius:14,
                   background:"linear-gradient(135deg,#22C55E,#16A34A)",border:"none",
-                  color:"#fff",fontFamily:"'Bebas Neue',sans-serif",fontSize:22,letterSpacing:4,
+                  color:"#fff",fontFamily:"'Poppins',sans-serif",fontSize:22,letterSpacing:1,
                   cursor:"pointer",boxShadow:"0 4px 22px rgba(34,197,94,.45)"}}>
                   {state==="done"?"RESTART":"START"}
                 </button>
@@ -635,7 +807,7 @@ export default function HIITIntervalTimer() {
                     background:state==="paused"?"linear-gradient(135deg,#22C55E,#16A34A)":T.surface,
                     border:`2px solid ${state==="paused"?"transparent":T.border}`,
                     color:state==="paused"?"#fff":T.text,
-                    fontFamily:"'Bebas Neue',sans-serif",fontSize:22,letterSpacing:4,
+                    fontFamily:"'Poppins',sans-serif",fontSize:22,letterSpacing:1,
                     cursor:"pointer",transition:"all .2s",
                     boxShadow:state==="paused"?"0 4px 22px rgba(34,197,94,.45)":"none"}}>
                     {state==="paused"?"RESUME":"PAUSE"}
@@ -643,8 +815,8 @@ export default function HIITIntervalTimer() {
                   <button onClick={handleStop} style={{
                     flex:1,padding:"18px",borderRadius:14,
                     background:T.surface,border:`2px solid ${T.border}`,
-                    color:T.textMid,fontFamily:"'Bebas Neue',sans-serif",
-                    fontSize:19,letterSpacing:2,cursor:"pointer"}}>STOP</button>
+                    color:T.textMid,fontFamily:"'Poppins',sans-serif",
+                    fontSize:19,letterSpacing:0.3,cursor:"pointer"}}>STOP</button>
                 </>
               )}
             </div>
@@ -655,7 +827,7 @@ export default function HIITIntervalTimer() {
                   <div key={p} style={{background:T.cardBg,borderRadius:12,
                     padding:"12px 8px",textAlign:"center",border:`1.5px solid ${T.border}`}}>
                     <div style={{fontSize:22}}>{PHASE_CONFIG[p].icon}</div>
-                    <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:18,
+                    <div style={{fontFamily:"'Poppins',sans-serif",fontSize:18,
                       color:PHASE_CONFIG[p].color,marginTop:3,fontWeight:"bold"}}>{fmtDisp(settings[p])}</div>
                     <div style={{fontSize:11,letterSpacing:1,color:T.textLow,marginTop:2,fontWeight:"bold"}}>
                       {PHASE_CONFIG[p].label}</div>
@@ -669,7 +841,7 @@ export default function HIITIntervalTimer() {
         {/* ══ SETTINGS TAB ══ */}
         {tab==="settings"&&(
           <div style={{flex:1,padding:"22px",display:"flex",flexDirection:"column"}}>
-            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:13,letterSpacing:3,
+            <div style={{fontFamily:"'Poppins',sans-serif",fontSize:13,letterSpacing:0.5,
               color:T.textLow,marginBottom:16,fontWeight:"bold"}}>
               SET INTERVALS — MINUTES : SECONDS
             </div>
@@ -683,7 +855,7 @@ export default function HIITIntervalTimer() {
               border:`1.5px solid ${T.border}`,marginBottom:10}}>
               <div style={{display:"flex",alignItems:"center",gap:10}}>
                 <span style={{fontSize:22}}>🔄</span>
-                <span style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:2,
+                <span style={{fontFamily:"'Poppins',sans-serif",letterSpacing:0.3,
                   fontSize:16,color:T.textMid,fontWeight:"bold"}}>ROUNDS</span>
               </div>
               <div style={{display:"flex",alignItems:"center",gap:14}}>
@@ -691,7 +863,7 @@ export default function HIITIntervalTimer() {
                   width:38,height:38,borderRadius:9,cursor:"pointer",
                   background:T.inputBg,border:`1.5px solid ${T.borderMid}`,
                   color:T.text,fontSize:22,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:"bold"}}>−</button>
-                <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:30,
+                <span style={{fontFamily:"'Poppins',sans-serif",fontSize:30,
                   color:T.text,minWidth:38,textAlign:"center",fontWeight:"bold"}}>{settings.rounds}</span>
                 <button onClick={()=>setSettings(s=>({...s,rounds:Math.min(30,s.rounds+1)}))} style={{
                   width:38,height:38,borderRadius:9,cursor:"pointer",
@@ -702,7 +874,7 @@ export default function HIITIntervalTimer() {
 
             {/* Presets */}
             <div style={{marginTop:14,marginBottom:12}}>
-              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:13,letterSpacing:3,
+              <div style={{fontFamily:"'Poppins',sans-serif",fontSize:13,letterSpacing:0.5,
                 color:T.textLow,marginBottom:12,fontWeight:"bold"}}>QUICK PRESETS</div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
                 {[
@@ -713,8 +885,8 @@ export default function HIITIntervalTimer() {
                   <button key={p.name} onClick={()=>setSettings(p.cfg)} style={{
                     padding:"13px 6px",borderRadius:10,cursor:"pointer",
                     background:T.cardBg,border:`2px solid ${p.color}50`,
-                    color:p.color,fontFamily:"'Bebas Neue',sans-serif",
-                    fontSize:14,letterSpacing:2,fontWeight:"bold"}}>
+                    color:p.color,fontFamily:"'Poppins',sans-serif",
+                    fontSize:14,letterSpacing:0.3,fontWeight:"bold"}}>
                     {p.name}
                   </button>
                 ))}
@@ -723,8 +895,15 @@ export default function HIITIntervalTimer() {
             <button onClick={()=>setSettings(DEFAULT_SETTINGS)} style={{
               padding:"13px",borderRadius:10,cursor:"pointer",
               background:"transparent",border:`2px solid ${T.border}`,
-              color:T.textMid,fontFamily:"'Bebas Neue',sans-serif",
-              fontSize:14,letterSpacing:2,fontWeight:"bold"}}>RESET TO DEFAULT</button>
+              color:T.textMid,fontFamily:"'Poppins',sans-serif",
+              fontSize:14,letterSpacing:0.3,fontWeight:"bold"}}>RESET TO DEFAULT</button>
+          </div>
+        )}
+
+        {/* ══ STOPWATCH TAB ══ */}
+        {tab==="stopwatch"&&(
+          <div style={{flex:1,padding:"22px"}}>
+            <Stopwatch T={T} isDark={isDark}/>
           </div>
         )}
 
@@ -738,7 +917,7 @@ export default function HIITIntervalTimer() {
         {/* ── FOOTER ── */}
         <div style={{padding:"18px 22px 24px",borderTop:`2px solid ${T.border}`,
           display:"flex",flexDirection:"column",alignItems:"center",gap:14,transition:"border-color .4s"}}>
-          <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:12,letterSpacing:3,
+          <div style={{fontFamily:"'Poppins',sans-serif",fontSize:12,letterSpacing:0.5,
             color:T.textLow,fontWeight:"bold"}}>FOLLOW JAMAL AAMIR KHAN</div>
           <div style={{display:"flex",gap:14}}>
             <a href="https://www.facebook.com/jamalaamirk/" target="_blank" rel="noopener noreferrer"
@@ -748,7 +927,7 @@ export default function HIITIntervalTimer() {
               <svg width="22" height="22" viewBox="0 0 24 24" fill="#1877F2">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
-              <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:14,letterSpacing:1,
+              <span style={{fontFamily:"'Poppins',sans-serif",fontSize:14,letterSpacing:1,
                 color:"#1877F2",fontWeight:"bold"}}>FACEBOOK</span>
             </a>
             <a href="https://www.instagram.com/jamalaamirkhan/" target="_blank" rel="noopener noreferrer"
@@ -765,7 +944,7 @@ export default function HIITIntervalTimer() {
                 </defs>
                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
               </svg>
-              <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:14,letterSpacing:1,fontWeight:"bold",
+              <span style={{fontFamily:"'Poppins',sans-serif",fontSize:14,letterSpacing:1,fontWeight:"bold",
                 background:"linear-gradient(90deg,#F58529,#DD2A7B)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>
                 INSTAGRAM</span>
             </a>
