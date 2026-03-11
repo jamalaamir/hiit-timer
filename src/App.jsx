@@ -660,9 +660,12 @@ function Stopwatch({ T, isDark }) {
 
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 export default function HIITIntervalTimer() {
-  const [theme,    setTheme]    = useState("light");
+  const [theme,    setTheme]    = useState(()=>localStorage.getItem("jak_theme")||"light");
   const [tab,      setTab]      = useState("timer");
-  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+  const [settings, setSettings] = useState(()=>{
+    try{ const s=localStorage.getItem("jak_settings"); return s?JSON.parse(s):DEFAULT_SETTINGS; }
+    catch{ return DEFAULT_SETTINGS; }
+  });
   const [state,    setState]    = useState("idle");
   const [phase,    setPhase]    = useState("warmup");
   const [phaseIdx, setPhaseIdx] = useState(0);
@@ -672,7 +675,12 @@ export default function HIITIntervalTimer() {
   const [flash,    setFlash]    = useState(null);
   const [isCD,     setIsCD]     = useState(false);
 
-  const [soundPack, setSoundPack] = useState("default");
+  const [soundPack, setSoundPack] = useState(()=>localStorage.getItem("jak_soundpack")||"default");
+
+  // Save to localStorage whenever they change
+  useEffect(()=>{ localStorage.setItem("jak_theme", theme); }, [theme]);
+  useEffect(()=>{ localStorage.setItem("jak_settings", JSON.stringify(settings)); }, [settings]);
+  useEffect(()=>{ localStorage.setItem("jak_soundpack", soundPack); }, [soundPack]);
 
   const activeThemeKey = theme;
   const T = (activeThemeKey==="dark"||activeThemeKey==="light") ? THEMES[activeThemeKey] : {...THEMES.dark,...EXTRA_THEMES[activeThemeKey]};
@@ -796,6 +804,7 @@ export default function HIITIntervalTimer() {
         @keyframes ringPulse{from{opacity:.75}to{opacity:1}}
         @keyframes popIn{from{transform:scale(1.2)}to{transform:scale(1)}}
         @keyframes slideUp{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+        @keyframes fadeTab{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
         @keyframes bar1{from{height:3px}to{height:16px}} @keyframes bar2{from{height:12px}to{height:4px}}
         @keyframes bar3{from{height:5px}to{height:18px}} @keyframes bar4{from{height:15px}to{height:5px}}
         @keyframes bar5{from{height:6px}to{height:14px}} @keyframes bar6{from{height:14px}to{height:3px}}
@@ -841,7 +850,7 @@ export default function HIITIntervalTimer() {
 
         {/* ══ TIMER TAB ══ */}
         {tab==="timer"&&(
-          <div style={{flex:1,padding:"12px 16px",display:"flex",flexDirection:"column",gap:10,overflowY:"auto"}}>
+          <div style={{flex:1,padding:"12px 16px",display:"flex",flexDirection:"column",gap:10,overflowY:"auto",animation:"fadeTab .25s ease"}}>
             {state!=="idle"&&(
               <div style={{display:"flex",gap:3}}>
                 {order.map((p,i)=>(
@@ -902,7 +911,7 @@ export default function HIITIntervalTimer() {
                   flex:1,padding:"12px",borderRadius:14,
                   background:"linear-gradient(135deg,#22C55E,#16A34A)",border:"none",
                   color:"#fff",fontFamily:"'Poppins',sans-serif",fontSize:22,letterSpacing:4,fontWeight:900,
-                  cursor:"pointer",boxShadow:"0 4px 22px rgba(34,197,94,.45)"}}>
+                  cursor:"pointer"}}>
                   {state==="done"?"RESTART":"START"}
                 </button>
               ):(
@@ -914,7 +923,7 @@ export default function HIITIntervalTimer() {
                     color:state==="paused"?"#fff":T.text,
                     fontFamily:"'Poppins',sans-serif",fontSize:20,letterSpacing:4,
                     cursor:"pointer",transition:"all .2s",
-                    boxShadow:state==="paused"?"0 4px 22px rgba(34,197,94,.45)":"none"}}>
+                    }}>
                     {state==="paused"?"RESUME":"PAUSE"}
                   </button>
                   <button onClick={handleStop} style={{
@@ -945,7 +954,7 @@ export default function HIITIntervalTimer() {
 
         {/* ══ SETTINGS TAB ══ */}
         {tab==="setup"&&(
-          <div style={{flex:1,padding:"22px",display:"flex",flexDirection:"column",overflowY:"auto"}}>
+          <div style={{flex:1,padding:"22px",display:"flex",flexDirection:"column",overflowY:"auto",animation:"fadeTab .25s ease"}}>
             <div style={{fontFamily:"'Poppins',sans-serif",fontSize:14,letterSpacing:3,
               color:T.textLow,marginBottom:16,fontWeight:"bold"}}>
               SET INTERVALS — MINUTES : SECONDS
@@ -1024,21 +1033,21 @@ export default function HIITIntervalTimer() {
 
         {/* ══ STOPWATCH TAB ══ */}
         {tab==="stopwatch"&&(
-          <div style={{flex:1,padding:"22px",overflowY:"auto"}}>
+          <div style={{flex:1,padding:"22px",overflowY:"auto",animation:"fadeTab .25s ease"}}>
             <Stopwatch T={T} isDark={isDark}/>
           </div>
         )}
 
         {/* ══ MUSIC TAB ══ */}
         {tab==="music"&&(
-          <div style={{flex:1,padding:"22px",overflowY:"auto"}}>
+          <div style={{flex:1,padding:"22px",overflowY:"auto",animation:"fadeTab .25s ease"}}>
             <MusicPlayer T={T} isDark={isDark}/>
           </div>
         )}
 
         {/* ══ STORE / UNLOCK TAB ══ */}
         {tab==="store"&&(
-          <div style={{flex:1,padding:"16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:18}}>
+          <div style={{flex:1,padding:"16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:18,animation:"fadeTab .25s ease"}}>
 
             {/* THEMES */}
             <div>
