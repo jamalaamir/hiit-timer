@@ -42,10 +42,14 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      - name: Copy app icons
+      - name: Force copy app icons
         run: |
           for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
             mkdir -p android/app/src/main/res/mipmap-${density}
+            rm -f android/app/src/main/res/mipmap-${density}/ic_launcher.png
+            rm -f android/app/src/main/res/mipmap-${density}/ic_launcher_round.png
+            rm -f android/app/src/main/res/mipmap-${density}/ic_launcher_foreground.png
+            rm -f android/app/src/main/res/mipmap-${density}/ic_launcher_background.png
           done
           cp icons/mipmap-mdpi/ic_launcher.png          android/app/src/main/res/mipmap-mdpi/ic_launcher.png
           cp icons/mipmap-mdpi/ic_launcher_round.png    android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
@@ -57,18 +61,28 @@ jobs:
           cp icons/mipmap-xxhdpi/ic_launcher_round.png  android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
           cp icons/mipmap-xxxhdpi/ic_launcher.png       android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
           cp icons/mipmap-xxxhdpi/ic_launcher_round.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+          echo "✅ Icons copied"
+          ls android/app/src/main/res/mipmap-xxhdpi/
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/hiit-timer.keystore
 
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
-      - name: Build Debug APK
+      - name: Build Release APK
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleRelease --no-daemon \
+            -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/android/app/hiit-timer.keystore \
+            -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
+            -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
+            -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
 
-      - name: Upload APK
+      - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: HIIT-Interval-Timer-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: android/app/build/outputs/apk/release/app-release.apk
           retention-days: 30
