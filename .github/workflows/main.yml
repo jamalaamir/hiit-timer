@@ -51,6 +51,8 @@ jobs:
             rm -f android/app/src/main/res/mipmap-${density}/ic_launcher_foreground.png
             rm -f android/app/src/main/res/mipmap-${density}/ic_launcher_background.png
           done
+          rm -f android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+          rm -f android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
           cp icons/mipmap-mdpi/ic_launcher.png          android/app/src/main/res/mipmap-mdpi/ic_launcher.png
           cp icons/mipmap-mdpi/ic_launcher_round.png    android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
           cp icons/mipmap-hdpi/ic_launcher.png          android/app/src/main/res/mipmap-hdpi/ic_launcher.png
