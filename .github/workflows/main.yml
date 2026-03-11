@@ -66,6 +66,16 @@ jobs:
           echo "✅ Icons copied"
           ls android/app/src/main/res/mipmap-xxhdpi/
 
+      - name: Update to Android 14 (API 34)
+        run: |
+          sed -i 's/compileSdkVersion = 33/compileSdkVersion = 34/' android/variables.gradle
+          sed -i 's/compileSdk 33/compileSdk 34/' android/app/build.gradle
+          sed -i 's/targetSdkVersion = 33/targetSdkVersion = 34/' android/variables.gradle
+          sed -i 's/targetSdk 33/targetSdk 34/' android/app/build.gradle
+          echo "✅ Android SDK updated to 34"
+          grep -E "compileSdk|targetSdk" android/variables.gradle || true
+          grep -E "compileSdk|targetSdk" android/app/build.gradle || true
+
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
