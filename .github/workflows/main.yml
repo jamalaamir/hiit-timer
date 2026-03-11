@@ -66,7 +66,11 @@ jobs:
 
       - name: Decode keystore
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/hiit-timer.keystore
+          echo "${{ secrets.KEYSTORE_BASE64 }}" \
+            | grep -v "CERTIFICATE\|-----\|^$" \
+            | tr -d '\r\n ' \
+            | base64 --decode > android/app/hiit-timer.keystore
+          echo "Keystore size: $(wc -c < android/app/hiit-timer.keystore) bytes"
 
       - name: Make gradlew executable
         run: chmod +x android/gradlew
