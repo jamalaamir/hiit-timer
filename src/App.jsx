@@ -190,7 +190,7 @@ function CircularTimer({ progress, phase, timeLeft, isPaused, isCountdown, T, is
   const r=108,cx=124,cy=124,circ=2*Math.PI*r;
   const offset=circ*(1-Math.max(0,Math.min(1,progress)));
   return (
-    <div style={{position:"relative",width:248,height:248,margin:"0 auto"}}>
+    <div className="app-timer-circle" style={{position:"relative",width:248,height:248,margin:"0 auto"}}>
       <svg width="248" height="248" style={{transform:"rotate(-90deg)"}}>
         <circle cx={cx} cy={cy} r={r} fill="none" stroke={isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.10)"} strokeWidth="12"/>
         <circle cx={cx} cy={cy} r={r} fill="none"
@@ -819,13 +819,21 @@ export default function HIITIntervalTimer() {
         a{text-decoration:none}
         button:active{transform:scale(0.96)}
         *{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+        .app-shell{display:flex;flex-direction:column;width:100%;min-height:100vh}
+        @media(min-width:600px){
+          .app-header,.app-tabs,.app-footer{width:100%}
+          .app-main{max-width:680px;margin:0 auto;width:100%;padding:0 20px}
+          .app-timer-circle{transform:scale(1.2);transform-origin:center}
+        }
+        @media(min-width:900px){
+          .app-main{max-width:860px}
+        }
       `}</style>
 
-      <div style={{width:"100%",maxWidth:430,minHeight:"100vh",display:"flex",
-        flexDirection:"column",animation:"slideUp .45s ease"}}>
+      <div className="app-shell" style={{animation:"slideUp .45s ease"}}>
 
         {/* ── HEADER ── */}
-        <div style={{padding:"10px 16px 10px",textAlign:"center",
+        <div className="app-header" style={{padding:"10px 16px 10px",textAlign:"center",
           borderBottom:`2px solid ${T.border}`,transition:"border-color .4s"}}>
           <div style={{fontFamily:"'Poppins',sans-serif",fontSize:20,fontWeight:900,
             letterSpacing:1,color:T.accent,lineHeight:1.1}}>HIIT INTERVAL TIMER</div>
@@ -834,7 +842,7 @@ export default function HIITIntervalTimer() {
         </div>
 
         {/* ── TABS ── */}
-        <div style={{display:"flex",borderBottom:`2px solid ${T.border}`,
+        <div className="app-tabs" style={{display:"flex",borderBottom:`2px solid ${T.border}`,
           overflowX:"auto",scrollbarWidth:"none",msOverflowStyle:"none"}}>
           {TABS.map(([t,ic,l])=>(
             <button key={t} onClick={()=>setTab(t)} style={{
@@ -848,6 +856,7 @@ export default function HIITIntervalTimer() {
           ))}
         </div>
 
+        <div className="app-main">
         {/* ══ TIMER TAB ══ */}
         {tab==="timer"&&(
           <div style={{flex:1,padding:"12px 16px",display:"flex",flexDirection:"column",gap:10,overflowY:"auto",animation:"fadeTab .25s ease"}}>
@@ -1147,8 +1156,9 @@ export default function HIITIntervalTimer() {
         {/* ── MODAL ── */}
 
 
+        </div>
         {/* ── FOOTER ── */}
-        <div style={{padding:"10px 16px 14px",borderTop:`2px solid ${T.border}`,
+        <div className="app-footer" style={{padding:"10px 16px 14px",borderTop:`2px solid ${T.border}`,
           display:"flex",flexDirection:"column",alignItems:"center",gap:8,transition:"border-color .4s"}}>
           <div style={{fontFamily:"'Poppins',sans-serif",fontSize:12,letterSpacing:3,
             color:T.textLow,fontWeight:"bold"}}>FOLLOW JAMAL AAMIR KHAN</div>
