@@ -553,18 +553,23 @@ function Stopwatch({ T, isDark }) {
           letterSpacing:2,color:T.textLow,marginBottom:10}}>
           {running?"⏱ RUNNING":elapsed>0?"⏸ PAUSED":"STOPWATCH"}
         </div>
-        <div style={{fontFamily:"'Poppins',sans-serif",fontWeight:900,fontSize:42,
+        <div style={{fontFamily:"'Courier New',monospace",fontWeight:900,fontSize:42,
           lineHeight:1,letterSpacing:0,
           color:running?"#22C55E":T.text,
-          textShadow:running?"0 0 30px rgba(34,197,94,0.4)":"none",
-          transition:"color .3s,text-shadow .3s"}}>
+          fontVariantNumeric:"tabular-nums",
+          WebkitFontFeatureSettings:'"tnum"',
+          fontFeatureSettings:'"tnum"',
+          textShadow:"none",
+          transition:"color .3s"}}>
           {fmt(elapsed)}
         </div>
         <div style={{fontSize:9,fontWeight:500,color:T.textFaint,letterSpacing:2,marginTop:6}}>
           HH : MM : SS . cc
         </div>
         {laps.length>0&&(
-          <div style={{marginTop:12,fontSize:14,fontWeight:600,color:T.textLow}}>
+          <div style={{marginTop:12,fontSize:14,fontWeight:600,color:T.textLow,
+            fontFamily:"'Courier New',monospace",
+            fontVariantNumeric:"tabular-nums",fontFeatureSettings:'"tnum"'}}>
             LAP {laps.length+1} · {fmt(elapsed-laps.reduce((a,l)=>a+l.split_ms,0))}
           </div>
         )}
