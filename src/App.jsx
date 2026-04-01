@@ -187,35 +187,35 @@ function MinSecInput({ label, icon, color, valueSecs, onChange, T }) {
 // ─── CIRCULAR TIMER ──────────────────────────────────────────────────────────
 function CircularTimer({ progress, phase, timeLeft, isPaused, isCountdown, T, isDark }) {
   const cfg = PHASE_CONFIG[phase]||PHASE_CONFIG.work;
-  const r=108,cx=124,cy=124,circ=2*Math.PI*r;
+  const r=86,cx=100,cy=100,circ=2*Math.PI*r;
   const offset=circ*(1-Math.max(0,Math.min(1,progress)));
   return (
-    <div className="app-timer-circle" style={{position:"relative",width:248,height:248,margin:"0 auto"}}>
-      <svg width="248" height="248" style={{transform:"rotate(-90deg)"}}>
+    <div className="app-timer-circle" style={{position:"relative",width:200,height:200,margin:"0 auto",flexShrink:0}}>
+      <svg width="200" height="200" style={{transform:"rotate(-90deg)"}}>
         <circle cx={cx} cy={cy} r={r} fill="none" stroke={isDark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.10)"} strokeWidth="12"/>
         <circle cx={cx} cy={cy} r={r} fill="none"
-          stroke={isCountdown?"#FF3D00":cfg.color}
-          strokeWidth={isCountdown?18:14}
+          stroke={cfg.color}
+          strokeWidth={14}
           strokeDasharray={circ} strokeDashoffset={offset}
           strokeLinecap="round"
           style={{
             filter:"none",
             transition:"stroke-dashoffset .65s ease,stroke .3s,stroke-width .2s",
-            animation:isCountdown?"ringPulse .45s ease-in-out infinite alternate":"none",
+            animation:"none",
           }}
         />
       </svg>
       <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",
         alignItems:"center",justifyContent:"center",gap:4}}>
-        <span style={{fontSize:14,fontFamily:"'Poppins',sans-serif",letterSpacing:4,
-          color:isCountdown?"#FF7043":cfg.color,fontWeight:900}}>
-          {isCountdown?"⚠ GET READY":`${cfg.icon} ${cfg.label}`}
+        <span style={{fontSize:11,fontFamily:"'Poppins',sans-serif",letterSpacing:2,
+          color:isCountdown?"#FF3D00":cfg.color,fontWeight:900}}>
+          {`${cfg.icon} ${cfg.label}`}
         </span>
-        <span style={{fontSize:isCountdown?76:66,fontFamily:"'Poppins',sans-serif",lineHeight:1,fontWeight:900,
-          color:isCountdown?"#FF3D00":T.text,
+        <span style={{fontSize:isCountdown?44:38,fontFamily:"'Poppins',sans-serif",lineHeight:1,fontWeight:900,
+          color:cfg.color,
           textShadow:"none",
           transition:"font-size .2s,color .2s",
-          animation:isCountdown?"popIn .25s ease":"none"}}>
+          animation:"none"}}>
           {fmtDisp(timeLeft)}
         </span>
         {isPaused&&<span style={{fontSize:13,letterSpacing:4,color:T.textLow,
@@ -229,6 +229,7 @@ function CircularTimer({ progress, phase, timeLeft, isPaused, isCountdown, T, is
 function MusicPlayer({ T, isDark }) {
   const [playlist,   setPlaylist]   = useState([]);
   const [activeList, setActiveList] = useState([]);
+  const [savedNames, setSavedNames] = useState(()=>{ try{ const n=localStorage.getItem("jak_playlist_names"); return n?JSON.parse(n):[]; }catch(e){return [];} });
   const [idx,        setIdx]        = useState(0);
   const [isPlaying,  setIsPlaying]  = useState(false);
   const [mode,       setMode]       = useState("normal");
@@ -265,6 +266,8 @@ function MusicPlayer({ T, isDark }) {
     setPlaylist(tracks);
     setActiveList(list);
     setIdx(0); setProgress(0); setDuration(0); setIsPlaying(false);
+    // Save track names to localStorage so user sees their playlist on reopen
+    try{ const names=tracks.map(t=>t.name); localStorage.setItem("jak_playlist_names", JSON.stringify(names)); setSavedNames(names); }catch(e){}
     if(audioRef.current){audioRef.current.pause();audioRef.current.src="";}
     setTimeout(()=>{
       if(audioRef.current&&list[0]){
@@ -277,19 +280,25 @@ function MusicPlayer({ T, isDark }) {
   };
 
   // Switch between shuffle and in-order without stopping
+  const modeRef = useRef(mode);
+  useEffect(()=>{modeRef.current=mode;},[mode]);
+
   const switchMode = newMode=>{
-    if(newMode===mode) return;
     setMode(newMode);
+    modeRef.current=newMode;
     if(!playlist.length) return;
     const cur=activeRef.current[idxRef.current];
     const list=newMode==="shuffle"?doShuffle([...playlist]):[...playlist];
-    // keep currently playing song at position 0
     if(cur){
       const pos=list.findIndex(t=>t.url===cur.url);
       if(pos>0){const [item]=list.splice(pos,1);list.unshift(item);}
     }
     setActiveList(list);
     setIdx(0);
+    if(activeRef.current[0]&&audioRef.current){
+      const keepPlaying=isPlayRef.current;
+      setTimeout(()=>playAt(0,list,keepPlaying),50);
+    }
   };
 
   const playAt = useCallback((i,list,shouldPlay)=>{
@@ -354,9 +363,9 @@ function MusicPlayer({ T, isDark }) {
         <button style={mBtn(mode==="shuffle")} onClick={()=>switchMode("shuffle")}>🔀 SHUFFLE</button>
       </div>
 
-      {/* File picker — multiple select, no webkitdirectory */}
-      <input ref={fileInputRef} type="file" accept="audio/*,audio/mp3,audio/mpeg,audio/wav,audio/ogg,audio/m4a,audio/flac"
-        multiple style={{display:"none"}} onChange={handleFiles}/>
+      {/* File picker — folder or multiple files */}
+      <input ref={fileInputRef} type="file" accept="audio/*"
+        multiple webkitdirectory="" mozdirectory="" directory="" style={{display:"none"}} onChange={handleFiles}/>
 
       <button onClick={()=>fileInputRef.current?.click()} style={{
         width:"100%",padding:"14px",borderRadius:11,marginBottom:18,
@@ -365,26 +374,44 @@ function MusicPlayer({ T, isDark }) {
         fontFamily:"'Poppins',sans-serif",fontSize:16,letterSpacing:2,cursor:"pointer",
         fontWeight:"bold",
       }}>
-        🎵 {playlist.length>0?`${playlist.length} SONGS LOADED — TAP TO CHANGE`:"TAP TO SELECT YOUR SONGS"}
+        📁 {playlist.length>0?`${playlist.length} SONGS LOADED — TAP TO CHANGE`:savedNames.length>0?`RELOAD ${savedNames.length} SONGS — TAP HERE`:"TAP TO SELECT MUSIC FOLDER"}
       </button>
 
-      {/* How-to hint */}
+      {/* How-to hint or saved song list */}
       {playlist.length===0 && (
         <div style={{
           background:isDark?"rgba(34,197,94,0.07)":"rgba(34,197,94,0.10)",
           border:`1px solid rgba(34,197,94,0.25)`,borderRadius:10,
           padding:"12px 14px",marginBottom:16,
         }}>
-          <div style={{fontFamily:"'Poppins',sans-serif",fontSize:16,color:"#22C55E",letterSpacing:4,marginBottom:6}}>
-            HOW TO SELECT MULTIPLE SONGS:
-          </div>
-          <div style={{fontSize:14,color:T.textMid,lineHeight:1.6}}>
-            1. Tap the button above<br/>
-            2. Navigate to your music folder<br/>
-            3. <strong style={{color:T.text}}>Long press</strong> the first song<br/>
-            4. <strong style={{color:T.text}}>Tap all other songs</strong> you want<br/>
-            5. Tap <strong style={{color:T.text}}>OK / Open</strong> — all songs load!
-          </div>
+          {savedNames.length>0?(
+            <>
+              <div style={{fontFamily:"'Poppins',sans-serif",fontSize:13,color:"#22C55E",letterSpacing:2,marginBottom:8,fontWeight:700}}>
+                🎵 LAST SESSION — {savedNames.length} SONGS (TAP BUTTON ABOVE TO RELOAD)
+              </div>
+              <div style={{maxHeight:120,overflowY:"auto"}}>
+                {savedNames.map((n,i)=>(
+                  <div key={i} style={{fontSize:12,color:T.textMid,padding:"3px 0",
+                    borderBottom:`1px solid ${T.border}`,overflow:"hidden",
+                    textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
+                    {String(i+1).padStart(2,"0")}. {n}
+                  </div>
+                ))}
+              </div>
+            </>
+          ):(
+            <>
+              <div style={{fontFamily:"'Poppins',sans-serif",fontSize:13,color:"#22C55E",letterSpacing:2,marginBottom:6,fontWeight:700}}>
+                HOW TO LOAD YOUR MUSIC:
+              </div>
+              <div style={{fontSize:13,color:T.textMid,lineHeight:1.7}}>
+                1. Tap the button above<br/>
+                2. Your file browser opens<br/>
+                3. <strong style={{color:T.text}}>Select your music folder</strong> directly<br/>
+                4. All songs inside load automatically!
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -823,7 +850,6 @@ export default function HIITIntervalTimer() {
         @media(min-width:600px){
           .app-header,.app-tabs,.app-footer{width:100%}
           .app-main{max-width:680px;margin:0 auto;width:100%;padding:0 20px}
-          .app-timer-circle{transform:scale(1.2);transform-origin:center}
         }
         @media(min-width:900px){
           .app-main{max-width:860px}
@@ -859,7 +885,7 @@ export default function HIITIntervalTimer() {
         <div className="app-main">
         {/* ══ TIMER TAB ══ */}
         {tab==="timer"&&(
-          <div style={{flex:1,padding:"12px 16px",display:"flex",flexDirection:"column",gap:10,overflowY:"auto",animation:"fadeTab .25s ease"}}>
+          <div style={{flex:1,padding:"12px 16px",display:"flex",flexDirection:"column",gap:8,overflowY:"auto",animation:"fadeTab .25s ease",minHeight:0}}>
             {state!=="idle"&&(
               <div style={{display:"flex",gap:3}}>
                 {order.map((p,i)=>(
@@ -917,29 +943,29 @@ export default function HIITIntervalTimer() {
             <div style={{display:"flex",gap:10}}>
               {state==="idle"||state==="done"?(
                 <button onClick={handleStart} style={{
-                  flex:1,padding:"12px",borderRadius:14,
+                  flex:1,padding:"10px",borderRadius:12,
                   background:"linear-gradient(135deg,#22C55E,#16A34A)",border:"none",
-                  color:"#fff",fontFamily:"'Poppins',sans-serif",fontSize:22,letterSpacing:4,fontWeight:900,
+                  color:"#fff",fontFamily:"'Poppins',sans-serif",fontSize:16,letterSpacing:3,fontWeight:700,
                   cursor:"pointer"}}>
                   {state==="done"?"RESTART":"START"}
                 </button>
               ):(
                 <>
                   <button onClick={handlePause} style={{
-                    flex:2,padding:"12px",borderRadius:14,
+                    flex:2,padding:"10px",borderRadius:12,
                     background:state==="paused"?"linear-gradient(135deg,#22C55E,#16A34A)":T.surface,
                     border:`2px solid ${state==="paused"?"transparent":T.border}`,
                     color:state==="paused"?"#fff":T.text,
-                    fontFamily:"'Poppins',sans-serif",fontSize:20,letterSpacing:4,
+                    fontFamily:"'Poppins',sans-serif",fontSize:15,letterSpacing:2,
                     cursor:"pointer",transition:"all .2s",
                     }}>
                     {state==="paused"?"RESUME":"PAUSE"}
                   </button>
                   <button onClick={handleStop} style={{
-                    flex:1,padding:"12px",borderRadius:14,
+                    flex:1,padding:"10px",borderRadius:12,
                     background:T.surface,border:`2px solid ${T.border}`,
                     color:T.textMid,fontFamily:"'Poppins',sans-serif",
-                    fontSize:18,letterSpacing:2,cursor:"pointer"}}>STOP</button>
+                    fontSize:14,letterSpacing:1,cursor:"pointer"}}>STOP</button>
                 </>
               )}
             </div>
